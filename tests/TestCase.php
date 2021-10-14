@@ -2,9 +2,9 @@
 
 namespace Dotburo\LogMetrics\Tests;
 
+use Dotburo\LogMetrics\LogMetricsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Dotburo\LogMetrics\LogMetricsServiceProvider;
 
 class TestCase extends Orchestra
 {
