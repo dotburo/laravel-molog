@@ -1,0 +1,58 @@
+{
+    "name": "dotburo/laravel-log-metrics",
+    "description": "Simple Laravel tool to log messages and metrics to a database",
+    "version": "0.0.1",
+    "keywords": [
+        "dotburo",
+        "laravel",
+        "logging",
+        "mertics"
+    ],
+    "homepage": "https://github.com/dotburo/laravel-log-metrics",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "dotburo",
+            "email": "code@dotburo.org",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.4"
+    },
+    "require-dev": {
+        "nunomaduro/collision": "^5.3",
+        "orchestra/testbench": "^5.20",
+        "pestphp/pest": "^1.18",
+        "pestphp/pest-plugin-laravel": "^1.1",
+        "vimeo/psalm": "^4.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dotburo\\LogMetrics\\": "src",
+            "Dotburo\\LogMetrics\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Dotburo\\LogMetrics\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "psalm": "vendor/bin/psalm --show-info=true",
+        "test": "./vendor/bin/pest --no-coverage",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage test-coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Dotburo\\LogMetrics\\LogMetricsServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
