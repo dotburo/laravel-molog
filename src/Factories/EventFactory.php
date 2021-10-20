@@ -20,9 +20,30 @@ class EventFactory
         return new MessageFactory($body);
     }
 
+    /**
+     * Instantiate a metric factory.
+     * @param string $key
+     * @param $value
+     * @return MetricFactory
+     */
     public static function createMetric(string $key, $value): MetricFactory
     {
         return new MetricFactory($key, $value);
+    }
+
+    /**
+     * Set the properties on the model and return the factory.
+     * @param int $id
+     * @param string $name
+     * @return $this
+     */
+    public function setRelation(int $id = 0, string $name = ''): EventFactory
+    {
+        $this->model->setLoggableIdAttribute($id);
+
+        $this->model->setLoggableTypeAttribute($name);
+
+        return $this;
     }
 
     /**
