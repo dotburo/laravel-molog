@@ -71,10 +71,10 @@ class Event extends Model
 
     /**
      * Make sure the relationship class name is set as a string or null.
-     * @param int $name
+     * @param string $name
      * @return void
      */
-    public function setLoggableTypeAttribute(int $name): void
+    public function setLoggableTypeAttribute(string $name): void
     {
         $this->attributes['loggable_type'] = $name ?: null;
     }
