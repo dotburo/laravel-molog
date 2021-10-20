@@ -1,8 +1,8 @@
 <?php
 
-namespace Dotburo\LogMetrics\Tests;
+namespace dotburo\LogMetrics\Tests;
 
-use Dotburo\LogMetrics\LogMetricsServiceProvider;
+use dotburo\LogMetrics\LogMetricsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Dotburo\\LogMetrics\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'dotburo\\LogMetrics\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 

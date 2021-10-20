@@ -1,6 +1,6 @@
 <?php
 
-namespace Dotburo\LogMetrics;
+namespace dotburo\LogMetrics;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -28,7 +28,7 @@ class LogMetricsServiceProvider extends ServiceProvider
     /** @inheritDoc */
     public function register()
     {
-        // todo $this->mergeConfigFrom(HealthConstants::CONFIG_PATH, 'health');
+        $this->mergeConfigFrom(realpath(__DIR__ . '/../config/log-metrics.php'), 'log-metrics');
     }
 
     /**

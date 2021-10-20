@@ -1,6 +1,6 @@
 <?php
 
-namespace Dotburo\LogMetrics;
+namespace dotburo\LogMetrics\Models;
 
 /**
  * Model for logged metrics.
@@ -16,13 +16,27 @@ namespace Dotburo\LogMetrics;
 class Metric extends Event
 {
     /** @inheritDoc */
-    protected $guarded = [
-        'id', 'tenant_id', 'context', 'context_id', 'type', 'key', 'value', 'unit', 'created_at',
-    ];
-
-    /** @inheritDoc */
     protected $casts = [
         'value' => 'float',
         'created_at' => 'datetime'
     ];
+
+    public function setTypeAttribute(string $type): void
+    {
+    }
+
+    public function setUnitAttribute(string $unit): void
+    {
+
+    }
+
+    public function setKeyAttribute(string $key): void
+    {
+
+    }
+
+    public function setValueAttribute($value): void
+    {
+
+    }
 }

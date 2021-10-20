@@ -5,7 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/dotburo/laravel-log-metrics/Check%20&%20fix%20styling?label=code%20style)](https://github.com/dotburo/laravel-log-metrics/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/dotburo/laravel-log-metrics.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-log-metrics)
 
-Simple Laravel tool to log messages and metrics to a database.
+**In development!** Simple Laravel tool to log messages and metrics to a database.
 
 ## Installation
 
@@ -18,20 +18,34 @@ composer require dotburo/laravel-log-metrics
 You can publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --provider="Dotburo\LogMetrics\LogMetricsServiceProvider" --tag="laravel-log-metrics-migrate"
+php artisan vendor:publish --provider="dotburo\LogMetrics\LogMetricsServiceProvider" --tag="laravel-log-metrics-migrate"
 php artisan migrate
 ```
 
 You can publish the config file with:
 ```bash
-php artisan vendor:publish --provider="Dotburo\LogMetrics\LogMetricsServiceProvider" --tag="laravel-log-metrics-config"
+php artisan vendor:publish --provider="dotburo\LogMetrics\LogMetricsServiceProvider" --tag="laravel-log-metrics-config"
 ```
 
-## Usage
+## Usage with the 'Logging' trait
 
-* Use the trait in your models `use LogMetrics`
-* [in progress]
-*
+### Basic usage
+
+```php
+$this->message('Import process completed')->log();
+```
+
+### Advanced usage
+
+```php
+$this->message()
+    ->setTenant(5)
+    ->setRelation($this->model->id, get_class($this->model))
+    ->setContext('Import process')
+    ->setLevel(LogMetricsConstants::ERROR)
+    ->setBody($exception)
+    ->log();
+```
 
 ## Testing
 

@@ -1,6 +1,10 @@
 <?php
 
-namespace Dotburo\LogMetrics;
+namespace dotburo\LogMetrics;
+
+use dotburo\LogMetrics\Factories\EventFactory;
+use dotburo\LogMetrics\Factories\MessageFactory;
+use dotburo\LogMetrics\Factories\MetricFactory;
 
 /**
  * Provides logging.
@@ -11,19 +15,23 @@ namespace Dotburo\LogMetrics;
 trait Logging
 {
     /**
-     * Log instance for the parent class.
-     * @var Message
+     * Create a JobLog instance for the parent class.
+     * @param string $body
+     * @return MessageFactory
      */
-    public Message $logged;
+    public function message(string $body = ''): MessageFactory
+    {
+        return EventFactory::createMessage($body);
+    }
 
     /**
      * Create a JobLog instance for the parent class.
-     * @return void
+     * @param string $key
+     * @param int|float $value
+     * @return MetricFactory
      */
-    public function createLog(): void
+    public function metric(string $key, $value): MetricFactory
     {
-        $this->logged = Message::createLog($name);
+        return EventFactory::createMetric($key, $value);
     }
-
-
 }

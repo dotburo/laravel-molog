@@ -1,6 +1,6 @@
 <?php
 
-namespace Dotburo\LogMetrics\Database\Factories;
+namespace dotburo\LogMetrics\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

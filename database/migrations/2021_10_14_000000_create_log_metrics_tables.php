@@ -1,11 +1,11 @@
 <?php
 
-use Dotburo\LogMetrics\Message;
+use dotburo\LogMetrics\Models\Message;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateLogMetricsTables extends Migration
 {
     /**
      * Run the migrations.
@@ -19,8 +19,10 @@ return new class extends Migration
 
             $table->unsignedBigInteger('tenant_id')->nullable()->index();
 
-            $table->string('context')->index();
-            $table->unsignedBigInteger('context_id')->nullable()->index();
+            $table->unsignedBigInteger('loggable_id')->nullable()->index();
+            $table->string('loggable_type')->nullable()->index();
+
+            $table->string('context')->nullable()->index();
 
             $table->unsignedTinyInteger('level')->default(Message::levelCode('debug'))->index();
             $table->longText('body');
@@ -34,8 +36,10 @@ return new class extends Migration
 
             $table->unsignedBigInteger('tenant_id')->nullable()->index();
 
-            $table->string('context')->index();
-            $table->unsignedBigInteger('context_id')->nullable()->index();
+            $table->unsignedBigInteger('loggable_id')->nullable()->index();
+            $table->string('loggable_type')->nullable()->index();
+
+            $table->string('context')->nullable()->index();
 
             $table->enum('type', ['float', 'int'])->default('float');
             $table->string('key');

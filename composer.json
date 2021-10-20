@@ -30,13 +30,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Dotburo\\LogMetrics\\": "src",
-            "Dotburo\\LogMetrics\\Database\\Factories\\": "database/factories"
+            "dotburo\\LogMetrics\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Dotburo\\LogMetrics\\Tests\\": "tests"
+            "dotburo\\LogMetrics\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -50,7 +49,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Dotburo\\LogMetrics\\LogMetricsServiceProvider"
+                "dotburo\\LogMetrics\\LogMetricsServiceProvider"
             ]
         }
     },
