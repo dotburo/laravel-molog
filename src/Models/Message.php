@@ -32,11 +32,43 @@ class Message extends Event
         return LogMetricsConstants::LEVEL_CODES[$level] ?? LogMetricsConstants::LEVEL_CODES['debug'];
     }
 
+    /**
+     * Return the code for the given level.
+     * This returns the debug level code as default and fallback value.
+     * @param int $level
+     * @return string
+     */
+    public static function levelLabel(int $level): string
+    {
+        $levels = array_flip(LogMetricsConstants::LEVEL_CODES);
+
+        return $levels[$level] ?? $levels[LogMetricsConstants::DEBUG];
+    }
+
+    /**
+     * Always display the level with its label.
+     * @return string
+     */
+    public function getLevelAttribute(): string
+    {
+        return self::levelLabel($this->attributes['level']);
+    }
+
+    /**
+     * Make sure the level is always stored as a valid int.
+     * @param $level
+     * @return void
+     */
     public function setLevelAttribute($level): void
     {
         $this->attributes['level'] = is_numeric($level) ? $level : static::levelCode($level);
     }
 
+    /**
+     * Make sure the body is set as a string or null.
+     * @param string $body
+     * @return void
+     */
     public function setBodyAttribute(string $body): void
     {
         $this->attributes['body'] = $body ?: null;
