@@ -29,7 +29,7 @@ class Message extends Event
      */
     public static function levelCode(string $level): int
     {
-        return LogMetricsConstants::LEVEL_CODES[$level] ?? LogMetricsConstants::LEVEL_CODES['debug'];
+        return LogMetricsConstants::LEVEL_CODES[$level] ?? LogMetricsConstants::LEVEL_CODES[LogMetricsConstants::DEBUG];
     }
 
     /**
@@ -42,7 +42,7 @@ class Message extends Event
     {
         $levels = array_flip(LogMetricsConstants::LEVEL_CODES);
 
-        return $levels[$level] ?? $levels[LogMetricsConstants::DEBUG];
+        return $levels[$level] ?? LogMetricsConstants::LEVEL_CODES[LogMetricsConstants::DEBUG];
     }
 
     /**
@@ -51,7 +51,7 @@ class Message extends Event
      */
     public function getLevelAttribute(): string
     {
-        return self::levelLabel($this->attributes['level']);
+        return static::levelLabel($this->attributes['level']);
     }
 
     /**
