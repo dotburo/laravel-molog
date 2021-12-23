@@ -1,10 +1,10 @@
 <?php
 
-namespace dotburo\LogMetrics;
+namespace Dotburo\LogMetrics;
 
-use dotburo\LogMetrics\Factories\EventFactory;
-use dotburo\LogMetrics\Factories\MessageFactory;
-use dotburo\LogMetrics\Factories\MetricFactory;
+use Dotburo\LogMetrics\Factories\MessageFactory;
+use Dotburo\LogMetrics\Factories\MetricFactory;
+use Dotburo\LogMetrics\Models\Metric;
 
 /**
  * Provides logging.
@@ -14,24 +14,61 @@ use dotburo\LogMetrics\Factories\MetricFactory;
  */
 trait Logging
 {
+    /** @var MessageFactory|null */
+    private ?MessageFactory $messageFactory;
+
+    /** @var MetricFactory|null */
+    private ?MetricFactory $metricFactory;
+
     /**
-     * Create a JobLog instance for the parent class.
+     * Return the existing factory or instantiate a new one.
      * @param string $body
+     * @param string $level
      * @return MessageFactory
      */
-    public function message(string $body = ''): MessageFactory
+    public function message(string $body = '', string $level = LogMetricsConstants::DEBUG): MessageFactory
     {
-        return EventFactory::createMessage($body);
+        $factory = $this->messageFactory ?: $this->messageFactory = new MessageFactory();
+
+        if ($body) {
+            $this->messageFactory->add($body, $level);
+        }
+
+        return $factory;
+    }
+
+    /**
+     * Return the existing factory or instantiate a new one.
+     * @param string $key
+     * @param int|float $value
+     * @param string|null $unit
+     * @param string $type
+     * @return MetricFactory
+     */
+    public function metric(string $key = '', $value = null, string $unit = '', string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory
+    {
+        $factory = $this->metricFactory ?: $this->metricFactory = new MetricFactory();
+
+        if ($key) {
+            $this->metricFactory->add($key, $value, $unit, $type);
+        }
+
+        return $factory;
     }
 
     /**
      * Create a JobLog instance for the parent class.
-     * @param string $key
-     * @param int|float $value
+     * @param Metric|array[] $metrics
      * @return MetricFactory
      */
-    public function metric(string $key, $value): MetricFactory
+    public function metrics(array $metrics = []): MetricFactory
     {
-        return EventFactory::createMetric($key, $value);
+        $factory = $this->metricFactory ?: $this->metricFactory = new MetricFactory();
+
+        if ($metrics) {
+            $this->metricFactory->addMany($metrics);
+        }
+
+        return $factory;
     }
 }

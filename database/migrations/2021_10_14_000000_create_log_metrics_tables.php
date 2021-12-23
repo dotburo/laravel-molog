@@ -1,6 +1,7 @@
 <?php
 
-use dotburo\LogMetrics\Models\Message;
+use Dotburo\LogMetrics\LogMetricsConstants;
+use Dotburo\LogMetrics\Models\Message;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -24,7 +25,9 @@ class CreateLogMetricsTables extends Migration
 
             $table->string('context')->nullable()->index();
 
-            $table->unsignedTinyInteger('level')->default(Message::levelCode('debug'))->index();
+            $debugLevelCode = Message::levelCode(LogMetricsConstants::DEBUG);
+
+            $table->unsignedTinyInteger('level')->default($debugLevelCode)->index();
             $table->longText('body');
 
             $table->timestamp('created_at')->nullable();

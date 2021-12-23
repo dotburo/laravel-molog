@@ -1,32 +1,85 @@
 <?php
 
-namespace dotburo\LogMetrics\Factories;
+namespace Dotburo\LogMetrics\Factories;
 
-use dotburo\LogMetrics\LogMetricsConstants;
-use dotburo\LogMetrics\Models\Message;
+use Dotburo\LogMetrics\LogMetricsConstants;
+use Dotburo\LogMetrics\Models\Message;
+use Psr\Log\LoggerInterface;
 
-class MessageFactory extends EventFactory
+/**
+ * Message factory class.
+ *
+ * @method emergency($message, array $context = array())
+ * @method alert($message, array $context = array())
+ * @method critical($message, array $context = array())
+ * @method error($message, array $context = array())
+ * @method warning($message, array $context = array())
+ * @method notice($message, array $context = array())
+ * @method info($message, array $context = array())
+ * @method debug($message, array $context = array())
+ *
+ * @copyright 2021 dotburo
+ * @author dotburo <code@dotburo.org>
+ */
+class MessageFactory extends EventFactory implements LoggerInterface
 {
-    public function __construct(string $body = '')
+    /**
+     * @param string $body
+     * @param string|int $level
+     * @return $this
+     */
+    public function add(string $body = '', $level = LogMetricsConstants::DEBUG): MessageFactory
     {
-        $this->model = new Message();
+        $message = $body instanceof Message
+            ? $body
+            : new Message([
+                'level' => $level,
+                'body' => $body,
+            ]);
 
-        if (!empty($body)) {
-            $this->setBody($body);
+        $this->items->offsetSet($message->getAttribute('key'), $message);
+
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @param string|int $level
+     * @return $this
+     */
+    public function setLevel(string $key, $level = LogMetricsConstants::DEBUG): MessageFactory
+    {
+        /** @var Message|null $message */
+        if ($message = $this->items->get($key)) {
+            $this->items->offsetSet($key, $message->setLevelAttribute($level));
         }
-    }
-
-    public function setLevel($level = LogMetricsConstants::DEBUG): MessageFactory
-    {
-        $this->model->setLevelAttribute($level);
 
         return $this;
     }
 
-    public function setBody(string $body): MessageFactory
+    public function setBody(string $key, string $body): MessageFactory
     {
-        $this->model->setBodyAttribute($body);
+        /** @var Message|null $message */
+        if ($message = $this->items->get($key)) {
+            $this->items->offsetSet($key, $message->setBodyAttribute($body));
+        }
 
         return $this;
+    }
+
+    public function log($level, $message, array $context = []): MessageFactory
+    {
+        $this->add($message, $level);
+
+        return $this;
+    }
+
+    public function __call($name, $arguments)
+    {
+        if (isset(LogMetricsConstants::LEVEL_CODES[$name])) {
+            return $this->log($name, ...$arguments);
+        }
+
+        return parent::__call($name, $arguments);
     }
 }

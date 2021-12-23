@@ -1,8 +1,8 @@
 <?php
 
-namespace dotburo\LogMetrics\Models;
+namespace Dotburo\LogMetrics\Models;
 
-use dotburo\LogMetrics\LogMetricsConstants;
+use Dotburo\LogMetrics\LogMetricsConstants;
 
 /**
  * Model for logged messages.
@@ -15,6 +15,11 @@ use dotburo\LogMetrics\LogMetricsConstants;
  */
 class Message extends Event
 {
+    /** @inheritDoc  */
+    protected $fillable = [
+        'level', 'body',
+    ];
+
     /** @inheritDoc */
     protected $casts = [
         'level' => 'int',
@@ -23,7 +28,7 @@ class Message extends Event
 
     /**
      * Return the code for the given level.
-     * This returns the debug level code as default and fallback value.
+     * This returns the debug level code as fallback value.
      * @param string $level
      * @return int
      */
@@ -34,7 +39,7 @@ class Message extends Event
 
     /**
      * Return the code for the given level.
-     * This returns the debug level code as default and fallback value.
+     * This returns the debug level code as fallback value.
      * @param int $level
      * @return string
      */
@@ -42,7 +47,7 @@ class Message extends Event
     {
         $levels = array_flip(LogMetricsConstants::LEVEL_CODES);
 
-        return $levels[$level] ?? LogMetricsConstants::LEVEL_CODES[LogMetricsConstants::DEBUG];
+        return $levels[$level] ?? LogMetricsConstants::DEBUG;
     }
 
     /**
@@ -57,20 +62,24 @@ class Message extends Event
     /**
      * Make sure the level is always stored as a valid int.
      * @param $level
-     * @return void
+     * @return Message
      */
-    public function setLevelAttribute($level): void
+    public function setLevelAttribute($level): Message
     {
-        $this->attributes['level'] = is_numeric($level) ? $level : static::levelCode($level);
+        $this->attributes['level'] = is_numeric($level) ? (int)$level : static::levelCode($level);
+
+        return $this;
     }
 
     /**
      * Make sure the body is set as a string or null.
      * @param string $body
-     * @return void
+     * @return Message
      */
-    public function setBodyAttribute(string $body): void
+    public function setBodyAttribute(string $body): Message
     {
         $this->attributes['body'] = $body ?: null;
+
+        return $this;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace dotburo\LogMetrics;
+namespace Dotburo\LogMetrics;
 
 use Psr\Log\LogLevel;
 
@@ -23,4 +23,7 @@ final class LogMetricsConstants extends LogLevel
         parent::INFO => 6,
         parent::DEBUG => 7,
     ];
+
+    /** @var string */
+    const DEFAULT_METRIC_TYPE = 'float';
 }

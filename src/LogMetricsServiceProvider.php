@@ -1,6 +1,6 @@
 <?php
 
-namespace dotburo\LogMetrics;
+namespace Dotburo\LogMetrics;
 
 use Illuminate\Support\ServiceProvider;
 

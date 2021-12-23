@@ -13,11 +13,4 @@
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
-    <issueHandlers>
-        <PropertyNotSetInConstructor>
-            <errorLevel type="suppress">
-                <file name="src/Commands/HealthCheckCommand.php" />
-            </errorLevel>
-        </PropertyNotSetInConstructor>
-    </issueHandlers>
 </psalm>

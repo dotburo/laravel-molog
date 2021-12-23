@@ -1,37 +1,83 @@
 <?php
 
-namespace dotburo\LogMetrics\Factories;
+namespace Dotburo\LogMetrics\Factories;
 
-use dotburo\LogMetrics\Models\Metric;
+use Dotburo\LogMetrics\LogMetricsConstants;
+use Dotburo\LogMetrics\Models\Metric;
 
+/**
+ * Metric factory class.
+ *
+ * @copyright 2021 dotburo
+ * @author dotburo <code@dotburo.org>
+ */
 class MetricFactory extends EventFactory
 {
-    public function __construct(string $key, $value)
+    public function add($key, $value = null, string $unit = '', string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory
     {
-        $this->model = new Metric();
+        $metric = $key instanceof Metric
+            ? $key
+            : new Metric([
+                'key' => $key,
+                'value' => $value,
+                'unit' => $unit,
+                'type' => $type
+            ]);
 
-        $this->setValue($key, $value);
-    }
-
-    public function setType(string $type = 'float'): MetricFactory
-    {
-        $this->model->setTypeAttribute($type);
+        $this->items->add($metric);
 
         return $this;
     }
 
-    public function setUnit(string $unit): MetricFactory
+    public function addMany(array $metrics): MetricFactory
     {
-        $this->model->setUnitAttribute($unit);
+        foreach ($metrics as $model) {
+            $model = $model instanceof Metric ? $model : new Metric($model);
+
+            $this->add($model);
+        }
+
+        return $this;
+    }
+
+    public function setType(string $key, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory
+    {
+        /** @var Metric|null $metric */
+        if ($metric = $this->items->get($key)) {
+            $this->items->add($metric->setTypeAttribute($type));
+        }
+
+        return $this;
+    }
+
+    public function setUnit(string $key, string $unit): MetricFactory
+    {
+        /** @var Metric|null $metric */
+        if ($metric = $this->items->get($key)) {
+            $this->items->add($metric->setUnitAttribute($unit));
+        }
+
+        return $this;
+    }
+
+    public function setKey(string $old, string $new): MetricFactory
+    {
+        /** @var Metric|null $metric */
+        if ($metric = $this->items->pull($old)) {
+            $metric = $metric->setKeyAttribute($new);
+
+            $this->items->add($metric);
+        }
 
         return $this;
     }
 
     public function setValue(string $key, $value): MetricFactory
     {
-        $this->model->setKeyAttribute($key);
-
-        $this->model->setValueAttribute($value);
+        /** @var Metric|null $metric */
+        if ($metric = $this->items->get($key)) {
+            $this->items->offsetSet($key, $metric->setValueAttribute($value));
+        }
 
         return $this;
     }

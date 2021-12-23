@@ -1,6 +1,6 @@
 <?php
 
-namespace dotburo\LogMetrics\Models;
+namespace Dotburo\LogMetrics\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -42,41 +42,49 @@ class Event extends Model
     /**
      * Make sure the tenant ID is set as an int or null.
      * @param int $id
-     * @return void
+     * @return Event
      */
-    public function setTenantIdAttribute(int $id): void
+    public function setTenantIdAttribute(int $id): Event
     {
         $this->attributes['tenant_id'] = $id ?: null;
+
+        return $this;
     }
 
     /**
      * Make sure the context is set as a string or null.
      * @param string $label
-     * @return void
+     * @return Event
      */
-    public function setContextAttribute(string $label): void
+    public function setContextAttribute(string $label): Event
     {
         $this->attributes['context'] = $label ?: null;
+
+        return $this;
     }
 
     /**
      * Make sure the relationship ID is set as an int or null.
      * @param int $id
-     * @return void
+     * @return Event
      */
-    public function setLoggableIdAttribute(int $id): void
+    public function setLoggableIdAttribute(int $id): Event
     {
         $this->attributes['loggable_id'] = $id ?: null;
+
+        return $this;
     }
 
     /**
      * Make sure the relationship class name is set as a string or null.
      * @param string $name
-     * @return void
+     * @return Event
      */
-    public function setLoggableTypeAttribute(string $name): void
+    public function setLoggableTypeAttribute(string $name): Event
     {
         $this->attributes['loggable_type'] = $name ?: null;
+
+        return $this;
     }
 
 }

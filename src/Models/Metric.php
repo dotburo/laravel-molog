@@ -1,6 +1,8 @@
 <?php
 
-namespace dotburo\LogMetrics\Models;
+namespace Dotburo\LogMetrics\Models;
+
+use Dotburo\LogMetrics\LogMetricsConstants;
 
 /**
  * Model for logged metrics.
@@ -15,28 +17,51 @@ namespace dotburo\LogMetrics\Models;
  */
 class Metric extends Event
 {
+    /** @inheritDoc  */
+    protected $fillable = [
+        'key', 'value', 'unit', 'type',
+    ];
+
     /** @inheritDoc */
     protected $casts = [
         'value' => 'float',
         'created_at' => 'datetime'
     ];
 
-    public function setTypeAttribute(string $type): void
+    public function setTypeAttribute(?string $type): Metric
     {
+        $this->attributes['type'] = !empty($type) ? strtolower($type) : LogMetricsConstants::DEFAULT_METRIC_TYPE;
+
+        return $this;
     }
 
-    public function setUnitAttribute(string $unit): void
+    public function setUnitAttribute(?string $unit): Metric
     {
+        $this->attributes['unit'] = $unit ?: null;
 
+        return $this;
     }
 
-    public function setKeyAttribute(string $key): void
+    public function setKeyAttribute(string $key): Metric
     {
+        $this->attributes['key'] = $key;
 
+        return $this;
     }
 
-    public function setValueAttribute($value): void
+    public function setValueAttribute($value): Metric
     {
+        $this->attributes['value'] = $value ?: 0;
 
+        return $this;
+    }
+
+    public function getValueAttribute()
+    {
+        $value = $this->attributes['value'];
+
+        settype($value, $this->attributes['type']);
+
+        return $value;
     }
 }

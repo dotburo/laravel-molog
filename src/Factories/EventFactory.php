@@ -1,59 +1,60 @@
 <?php
 
-namespace dotburo\LogMetrics\Factories;
+namespace Dotburo\LogMetrics\Factories;
 
-use dotburo\LogMetrics\Models\Message;
-use dotburo\LogMetrics\Models\Metric;
+use Dotburo\LogMetrics\Exceptions\EventFactoryException;
+use Dotburo\LogMetrics\Models\Event;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class EventFactory
 {
-    /** @var Message|Metric */
-    protected $model;
+    /** @var Collection */
+    protected Collection $items;
 
     /**
-     * Instantiate a message factory.
-     * @param string|null $body
-     * @return MessageFactory
+     * EventFactory constructor.
      */
-    public static function createMessage(string $body = ''): MessageFactory
+    public function __construct()
     {
-        return new MessageFactory($body);
-    }
-
-    /**
-     * Instantiate a metric factory.
-     * @param string $key
-     * @param $value
-     * @return MetricFactory
-     */
-    public static function createMetric(string $key, $value): MetricFactory
-    {
-        return new MetricFactory($key, $value);
+        $this->items = new Collection();
     }
 
     /**
      * Set the properties on the model and return the factory.
-     * @param int $id
+     * @param int|Model $id
      * @param string $name
      * @return $this
      */
-    public function setRelation(int $id = 0, string $name = ''): EventFactory
+    public function setRelation($id = 0, string $name = ''): EventFactory
     {
-        $this->model->setLoggableIdAttribute($id);
+        $modelInstance = $id instanceof Model;
 
-        $this->model->setLoggableTypeAttribute($name);
+        $id = $modelInstance ? $id->getKey() : (int)$id;
+
+        $name = !$name && $modelInstance ? get_class($id) : $name;
+
+        $this->items = $this->items->map(function(Event $event) use ($id, $name) {
+            $event = $event->setLoggableIdAttribute($id);
+
+            return $event->setLoggableTypeAttribute($name);
+        });
 
         return $this;
     }
 
     /**
-     * Set the properties on the model and return the factory.
-     * @param string $label
+     * Set the property on the model and return the factory.
+     * @param object|string $label
      * @return $this
      */
-    public function setContext(string $label = ''): EventFactory
+    public function setContext($label): EventFactory
     {
-        $this->model->setContextAttribute($label);
+        $label = is_object($label) ? get_class($label) : $label;
+
+        $this->items = $this->items->map(function(Event $event) use ($label) {
+            return $event->setContextAttribute($label);
+        });
 
         return $this;
     }
@@ -63,18 +64,57 @@ class EventFactory
      * @param int $id
      * @return $this
      */
-    public function setTenant(int $id = 0): EventFactory
+    public function setTenant(int $id): EventFactory
     {
-        $this->model->setTenantIdAttribute($id);
+        $this->items = $this->items->map(function(Event $event) use ($id) {
+            return $event->setTenantIdAttribute($id);
+        });
 
         return $this;
     }
 
     /**
-     * @return bool
+     * Pass method calls to the event collection if possible.
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
+     * @throws EventFactoryException
      */
-    public function log(): bool
+    public function __call(string $name, array $arguments)
     {
-        return $this->model->save();
+        if (!method_exists($this->items, $name)) {
+            throw new EventFactoryException("The method '$name' is not implemented.");
+        }
+
+        return $this->items->$name(...$arguments);
+    }
+
+    /**
+     * Store all events.
+     * @param bool $reset
+     * @return int
+     */
+    public function save(bool $reset = true): int
+    {
+        $count = $this->items->filter(function (Model $model) {
+            return $model->save();
+        })->count();
+
+        if ($reset) {
+            $this->reset();
+        }
+
+        return $count;
+    }
+
+    /**
+     * Clear the current events.
+     * @return EventFactory
+     */
+    public function reset(): EventFactory
+    {
+        $this->items = new Collection();
+
+        return $this;
     }
 }
