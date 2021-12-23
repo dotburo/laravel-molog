@@ -1,7 +1,7 @@
 {
     "name": "dotburo/laravel-log-metrics",
     "description": "Simple Laravel tool to log messages and metrics to a database",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "keywords": [
         "dotburo",
         "laravel",
