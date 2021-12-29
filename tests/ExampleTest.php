@@ -13,15 +13,35 @@ it('can test', function () {
     $metricFactory->setTenant(5);
     $metricFactory->setContext('Import process');
     //$metricFactory->setRelation($messageFactory->last());
-    $metricFactory->last()->value = 5.45;
+    $metricFactory->last()->value = 5;
     //$metricFactory->save();
+
+
+    expect($metricFactory->count())->toBe(2);
+    expect($metricFactory->last()->key)->toBe('density');
 
     /** @var Metric $lastMetric */
     $lastMetric = $metricFactory->last();
+    $lastUuid = $lastMetric->getKey();
 
-    expect($lastMetric->value)->toBe(5.45);
-    expect($lastMetric->tenant_id)->toBe(5);
-    expect($lastMetric->key)->toBe('density');
-    expect($lastMetric->context)->toBe('Import process');
+    expect($lastUuid)->toMatch('#^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$#i');
+    expect($metricFactory->last()->value)->toBe(5.0);
 
+
+    $metricFactory->setKey($lastUuid, 'density 2');
+    $metricFactory->setType($lastUuid, 'int');
+    $metricFactory->setValue($lastUuid, 6);
+
+    expect($metricFactory->last()->value)->toBe(6);
+
+    $lastMetric->type = 'float';
+    $lastMetric->value = 3.35;
+
+    expect($metricFactory->last()->value)->toBe(3.35);
+
+    expect($metricFactory->last()->tenant_id)->toBe(5);
+    expect($metricFactory->last()->key)->toBe('density 2');
+    expect($metricFactory->last()->context)->toBe('Import process');
+
+    expect($metricFactory->count())->toBe(2);
 });

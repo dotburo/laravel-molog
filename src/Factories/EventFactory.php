@@ -34,10 +34,10 @@ class EventFactory
 
         $name = !$name && $modelInstance ? get_class($id) : $name;
 
-        $this->items = $this->items->map(function(Event $event) use ($id, $name) {
-            $event = $event->setLoggableIdAttribute($id);
+        $this->items->each(function(Event $event) use ($id, $name) {
+            $event->setLoggableIdAttribute($id);
 
-            return $event->setLoggableTypeAttribute($name);
+            $event->setLoggableTypeAttribute($name);
         });
 
         return $this;
@@ -52,8 +52,8 @@ class EventFactory
     {
         $label = is_object($label) ? get_class($label) : $label;
 
-        $this->items = $this->items->map(function(Event $event) use ($label) {
-            return $event->setContextAttribute($label);
+        $this->items->each(function(Event $event) use ($label) {
+            $event->setContextAttribute($label);
         });
 
         return $this;
@@ -66,8 +66,8 @@ class EventFactory
      */
     public function setTenant(int $id): EventFactory
     {
-        $this->items = $this->items->map(function(Event $event) use ($id) {
-            return $event->setTenantIdAttribute($id);
+        $this->items->each(function(Event $event) use ($id) {
+            $event->setTenantIdAttribute($id);
         });
 
         return $this;

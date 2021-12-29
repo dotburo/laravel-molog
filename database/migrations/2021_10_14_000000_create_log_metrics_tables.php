@@ -16,7 +16,7 @@ class CreateLogMetricsTables extends Migration
     {
         # Message table.
         Schema::create('messages', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->uuid('id')->primary();
 
             $table->unsignedBigInteger('tenant_id')->nullable()->index();
 
@@ -35,7 +35,7 @@ class CreateLogMetricsTables extends Migration
 
         # Metrics table.
         Schema::create('metrics', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->uuid('id')->primary();
 
             $table->unsignedBigInteger('tenant_id')->nullable()->index();
 

@@ -5,6 +5,7 @@ namespace Dotburo\LogMetrics\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Str;
 
 /**
  * Base model for logged messages and metrics.
@@ -25,7 +26,13 @@ class Event extends Model
     const UPDATED_AT = null;
 
     /** @inheritDoc */
-    protected $guarded = ['*'];
+    public $incrementing = false;
+
+    /** @inheritDoc */
+    protected $keyType = 'uuid';
+
+    /** @inheritDoc */
+    protected $guarded = ['id', 'created_at'];
 
     /** @inheritDoc */
     protected $hidden = ['id'];
@@ -37,6 +44,21 @@ class Event extends Model
     public function loggable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Override the constructor to give the model an UUID as primary key if it isn't assigned yet.
+     * {@inheritDoc}
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $keyName = $this->getKeyName();
+
+        if (!$this->getAttribute($keyName)) {
+            $this->setAttribute($keyName, Str::uuid()->toString());
+        }
     }
 
     /**

@@ -37,31 +37,31 @@ class MessageFactory extends EventFactory implements LoggerInterface
                 'body' => $body,
             ]);
 
-        $this->items->offsetSet($message->getAttribute('key'), $message);
+        $this->items->offsetSet($message->getKey(), $message);
 
         return $this;
     }
 
     /**
-     * @param string $key
+     * @param string $id
      * @param string|int $level
      * @return $this
      */
-    public function setLevel(string $key, $level = LogMetricsConstants::DEBUG): MessageFactory
+    public function setLevel(string $id, $level = LogMetricsConstants::DEBUG): MessageFactory
     {
         /** @var Message|null $message */
-        if ($message = $this->items->get($key)) {
-            $this->items->offsetSet($key, $message->setLevelAttribute($level));
+        if ($message = $this->items->get($id)) {
+            $message->setLevelAttribute($level);
         }
 
         return $this;
     }
 
-    public function setBody(string $key, string $body): MessageFactory
+    public function setBody(string $id, string $body): MessageFactory
     {
         /** @var Message|null $message */
-        if ($message = $this->items->get($key)) {
-            $this->items->offsetSet($key, $message->setBodyAttribute($body));
+        if ($message = $this->items->get($id)) {
+            $message->setBodyAttribute($body);
         }
 
         return $this;

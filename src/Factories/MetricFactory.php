@@ -24,59 +24,55 @@ class MetricFactory extends EventFactory
                 'type' => $type
             ]);
 
-        $this->items->add($metric);
+        $this->items->offsetSet($metric->getKey(), $metric);
 
         return $this;
     }
 
-    public function addMany(array $metrics): MetricFactory
+    public function addMany(array $items): MetricFactory
     {
-        foreach ($metrics as $model) {
-            $model = $model instanceof Metric ? $model : new Metric($model);
-
-            $this->add($model);
+        foreach ($items as $metric) {
+            $this->add($metric);
         }
 
         return $this;
     }
 
-    public function setType(string $key, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory
+    public function setType(string $id, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory
     {
         /** @var Metric|null $metric */
-        if ($metric = $this->items->get($key)) {
-            $this->items->add($metric->setTypeAttribute($type));
+        if ($metric = $this->items->get($id)) {
+            $metric->setTypeAttribute($type);
         }
 
         return $this;
     }
 
-    public function setUnit(string $key, string $unit): MetricFactory
+    public function setUnit(string $id, string $unit): MetricFactory
     {
         /** @var Metric|null $metric */
-        if ($metric = $this->items->get($key)) {
-            $this->items->add($metric->setUnitAttribute($unit));
+        if ($metric = $this->items->get($id)) {
+            $metric->setUnitAttribute($unit);
         }
 
         return $this;
     }
 
-    public function setKey(string $old, string $new): MetricFactory
+    public function setKey(string $id, string $key): MetricFactory
     {
         /** @var Metric|null $metric */
-        if ($metric = $this->items->pull($old)) {
-            $metric = $metric->setKeyAttribute($new);
-
-            $this->items->add($metric);
+        if ($metric = $this->items->get($id)) {
+            $metric->setKeyAttribute($key);
         }
 
         return $this;
     }
 
-    public function setValue(string $key, $value): MetricFactory
+    public function setValue(string $id, $value): MetricFactory
     {
         /** @var Metric|null $metric */
-        if ($metric = $this->items->get($key)) {
-            $this->items->offsetSet($key, $metric->setValueAttribute($value));
+        if ($metric = $this->items->get($id)) {
+            $metric->setValueAttribute($value);
         }
 
         return $this;
