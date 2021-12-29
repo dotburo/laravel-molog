@@ -103,7 +103,9 @@ class MetricFactory extends EventFactory
     public function __toString(): string
     {
         return $this->items->map(function(Metric $metric) {
-            return trim("→ $metric->key: $metric->value $metric->unit");
-        })->join(PHP_EOL);
+            $context = $metric->context ? "$metric->context: " : '';
+
+            return trim("→ {$context}$metric->key: $metric->value $metric->unit");
+        })->reverse()->join(PHP_EOL);
     }
 }
