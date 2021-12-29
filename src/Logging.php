@@ -50,7 +50,7 @@ trait Logging
         $factory = $this->metricFactory ?? $this->metricFactory = new MetricFactory();
 
         if ($key) {
-            $this->metricFactory->add($key, $value, $unit, $type);
+            $this->metricFactory->add($key, $value, $type, $unit);
         }
 
         return $factory;
