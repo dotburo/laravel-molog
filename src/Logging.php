@@ -58,7 +58,7 @@ trait Logging
 
     /**
      * Create a JobLog instance for the parent class.
-     * @param Metric|array[] $metrics
+     * @param Metric[]|array[] $metrics
      * @return MetricFactory
      */
     public function metrics(array $metrics = []): MetricFactory

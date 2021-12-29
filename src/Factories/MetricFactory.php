@@ -3,7 +3,6 @@
 namespace Dotburo\LogMetrics\Factories;
 
 use Dotburo\LogMetrics\LogMetricsConstants;
-use Dotburo\LogMetrics\Models\Event;
 use Dotburo\LogMetrics\Models\Metric;
 
 /**

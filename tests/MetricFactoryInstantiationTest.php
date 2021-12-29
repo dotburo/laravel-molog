@@ -1,12 +1,12 @@
 <?php
 
 use Dotburo\LogMetrics\Factories\MetricFactory;
-use Dotburo\LogMetrics\Models\Metric;
+use Dotburo\LogMetrics\Models\Message;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('can test', function () {
+it('can create, add and update metrics', function () {
     $metricFactory = new MetricFactory();
     $metricFactory->add('pressure', 2.35, 'int', 'bar');
     $metricFactory->add('density', 5.43);
@@ -16,11 +16,10 @@ it('can test', function () {
     $metricFactory->last()->value = 5;
     //$metricFactory->save();
 
-
     expect($metricFactory->count())->toBe(2);
     expect($metricFactory->last()->key)->toBe('density');
 
-    /** @var Metric $lastMetric */
+    /** @var Message $lastMetric */
     $lastMetric = $metricFactory->last();
     $lastUuid = $lastMetric->getKey();
 
