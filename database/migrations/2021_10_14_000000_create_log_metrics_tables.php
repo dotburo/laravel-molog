@@ -20,7 +20,7 @@ class CreateLogMetricsTables extends Migration
 
             $table->unsignedBigInteger('tenant_id')->nullable()->index();
 
-            $table->unsignedBigInteger('loggable_id')->nullable()->index();
+            $table->string('loggable_id')->nullable()->index();
             $table->string('loggable_type')->nullable()->index();
 
             $table->string('context')->nullable()->index();
@@ -39,14 +39,14 @@ class CreateLogMetricsTables extends Migration
 
             $table->unsignedBigInteger('tenant_id')->nullable()->index();
 
-            $table->unsignedBigInteger('loggable_id')->nullable()->index();
+            $table->string('loggable_id')->nullable()->index();
             $table->string('loggable_type')->nullable()->index();
 
             $table->string('context')->nullable()->index();
 
             $table->enum('type', ['float', 'int'])->default('float');
             $table->string('key');
-            $table->double('value');
+            $table->double('value')->default(0);
             $table->string('unit', 10)->nullable();
 
             $table->timestamp('created_at')->nullable();

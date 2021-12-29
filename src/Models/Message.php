@@ -3,6 +3,7 @@
 namespace Dotburo\LogMetrics\Models;
 
 use Dotburo\LogMetrics\LogMetricsConstants;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * Model for logged messages.
@@ -25,6 +26,15 @@ class Message extends Event
         'level' => 'int',
         'created_at' => 'datetime'
     ];
+
+    /**
+     * Optional relationship with child metrics.
+     * @return MorphMany
+     */
+    public function metrics(): MorphMany
+    {
+        return $this->morphMany(Metric::class, 'loggable');
+    }
 
     /**
      * Return the code for the given level.

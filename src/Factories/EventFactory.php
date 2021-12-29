@@ -29,17 +29,17 @@ abstract class EventFactory implements Stringable
 
     /**
      * Set the properties on the model and return the factory.
-     * @param int|Model $id
+     * @param int|Model $relationId
      * @param string $name
      * @return $this
      */
-    public function setRelation($id = 0, string $name = ''): EventFactory
+    public function setRelation($relationId = 0, string $name = ''): EventFactory
     {
-        $modelInstance = $id instanceof Model;
+        $modelInstance = $relationId instanceof Model;
 
-        $id = $modelInstance ? $id->getKey() : (int)$id;
+        $id = $modelInstance ? $relationId->getKey() : (int)$relationId;
 
-        $name = !$name && $modelInstance ? get_class($id) : $name;
+        $name = !$name && $modelInstance ? get_class($relationId) : $name;
 
         $this->items->each(function(Event $event) use ($id, $name) {
             $event->setLoggableIdAttribute($id);
@@ -98,20 +98,13 @@ abstract class EventFactory implements Stringable
 
     /**
      * Store all events.
-     * @param bool $reset
      * @return int
      */
-    public function save(bool $reset = true): int
+    public function save(): int
     {
-        $count = $this->items->filter(function (Model $model) {
+        return $this->items->filter(function (Model $model) {
             return $model->save();
         })->count();
-
-        if ($reset) {
-            $this->reset();
-        }
-
-        return $count;
     }
 
     /**

@@ -13,7 +13,7 @@ use Dotburo\LogMetrics\Models\Metric;
  */
 class MetricFactory extends EventFactory
 {
-    public function add($key, $value = null, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
+    public function add($key, $value = 0, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
     {
         $metric = $key instanceof Metric
             ? $key
@@ -36,6 +36,28 @@ class MetricFactory extends EventFactory
         }
 
         return $this;
+    }
+
+    public function increment($key, $value = 0, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
+    {
+        if ($metric = $this->items->where('key', $key)->first()) {
+            $metric->setValueAttribute($metric->value + $value);
+
+            return $this;
+        }
+
+        return $this->add($key, $value, $type, $unit);
+    }
+
+    public function decrement($key, $value = 0, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
+    {
+        if ($metric = $this->items->where('key', $key)->first()) {
+            $metric->setValueAttribute($metric->value - $value);
+
+            return $this;
+        }
+
+        return $this->add($key, $value, $type, $unit);
     }
 
     public function setType(string $id, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory

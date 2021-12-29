@@ -87,10 +87,10 @@ class Event extends Model
 
     /**
      * Make sure the relationship ID is set as an int or null.
-     * @param int $id
+     * @param int|string $id Can be integer or UUID.
      * @return Event
      */
-    public function setLoggableIdAttribute(int $id): Event
+    public function setLoggableIdAttribute($id): Event
     {
         $this->attributes['loggable_id'] = $id ?: null;
 
