@@ -25,7 +25,7 @@ php artisan migrate
 ## Logging trait examples
 
 ```php
-use Dotburo\LogMetrics\Models\Message;
+use Dotburo\LogMetrics\Models\Metric;
 use Dotburo\LogMetrics\Logging;
 use Psr\Log\LogLevel;
 
@@ -54,7 +54,7 @@ class YourClass {
         $this->metrics([
             ['key' => 'density', 'value' => 5.3567],
             ['key' => 'pressure', 'value' => 2.35, 'unit' => 'bar', 'type' => 'int'],
-            new Message(['key' => 'quality', 'value' => 3])
+            new Metric(['key' => 'quality', 'value' => 3])
         ]);
         
         $this->metrics()->setTenant(5)->setRelation($this->message()->last())->save();

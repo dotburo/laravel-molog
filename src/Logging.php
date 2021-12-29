@@ -45,7 +45,7 @@ trait Logging
      * @param string $type
      * @return MetricFactory
      */
-    public function metric(string $key = '', $value = null, string $unit = '', string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory
+    public function metric(string $key = '', $value = null, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
     {
         $factory = $this->metricFactory ?? $this->metricFactory = new MetricFactory();
 

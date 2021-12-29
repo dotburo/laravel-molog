@@ -32,7 +32,7 @@ class MetricFactory extends EventFactory
     public function addMany(array $items): MetricFactory
     {
         foreach ($items as $metric) {
-            $this->add($metric);
+            $this->add($metric['key'], $metric['value'], $metric['type'] ?? '', $metric['unit'] ?? '');
         }
 
         return $this;
