@@ -14,11 +14,11 @@ use Dotburo\LogMetrics\Models\Metric;
  */
 trait Logging
 {
-    /** @var MessageFactory|null */
-    private ?MessageFactory $messageFactory;
+    /** @var MessageFactory */
+    private MessageFactory $messageFactory;
 
-    /** @var MetricFactory|null */
-    private ?MetricFactory $metricFactory;
+    /** @var MetricFactory */
+    private MetricFactory $metricFactory;
 
     /**
      * Return the existing factory or instantiate a new one.
@@ -28,7 +28,7 @@ trait Logging
      */
     public function message(string $body = '', string $level = LogMetricsConstants::DEBUG): MessageFactory
     {
-        $factory = $this->messageFactory ?: $this->messageFactory = new MessageFactory();
+        $factory = $this->messageFactory ?? $this->messageFactory = new MessageFactory();
 
         if ($body) {
             $this->messageFactory->add($body, $level);
@@ -47,7 +47,7 @@ trait Logging
      */
     public function metric(string $key = '', $value = null, string $unit = '', string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory
     {
-        $factory = $this->metricFactory ?: $this->metricFactory = new MetricFactory();
+        $factory = $this->metricFactory ?? $this->metricFactory = new MetricFactory();
 
         if ($key) {
             $this->metricFactory->add($key, $value, $unit, $type);
@@ -63,7 +63,7 @@ trait Logging
      */
     public function metrics(array $metrics = []): MetricFactory
     {
-        $factory = $this->metricFactory ?: $this->metricFactory = new MetricFactory();
+        $factory = $this->metricFactory ?? $this->metricFactory = new MetricFactory();
 
         if ($metrics) {
             $this->metricFactory->addMany($metrics);
