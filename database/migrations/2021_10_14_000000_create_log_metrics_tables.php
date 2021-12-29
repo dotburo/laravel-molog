@@ -30,7 +30,7 @@ class CreateLogMetricsTables extends Migration
             $table->unsignedTinyInteger('level')->default($debugLevelCode)->index();
             $table->longText('body');
 
-            $table->timestamp('created_at')->nullable();
+            $table->timestamp('created_at', 3)->nullable();
         });
 
         # Metrics table.
@@ -49,7 +49,7 @@ class CreateLogMetricsTables extends Migration
             $table->double('value')->default(0);
             $table->string('unit', 10)->nullable();
 
-            $table->timestamp('created_at')->nullable();
+            $table->timestamp('created_at', 3)->nullable();
         });
     }
 

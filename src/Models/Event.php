@@ -32,6 +32,9 @@ class Event extends Model
     protected $keyType = 'uuid';
 
     /** @inheritDoc */
+    protected $dateFormat = 'Y-m-d H:i:s.u';
+
+    /** @inheritDoc */
     protected $guarded = ['id', 'created_at'];
 
     /** @inheritDoc */
