@@ -8,7 +8,7 @@ uses(RefreshDatabase::class);
 
 it('can test', function () {
     $metricFactory = new MetricFactory();
-    $metricFactory->add('pressure', 2.35, 'bar', 'int');
+    $metricFactory->add('pressure', 2.35, 'int', 'bar');
     $metricFactory->add('density', 5.43);
     $metricFactory->setTenant(5);
     $metricFactory->setContext('Import process');
@@ -44,4 +44,6 @@ it('can test', function () {
     expect($metricFactory->last()->context)->toBe('Import process');
 
     expect($metricFactory->count())->toBe(2);
+
+    expect((string)$metricFactory)->toBe("→ pressure: 2 bar" . PHP_EOL . "→ density 2: 3.35");
 });

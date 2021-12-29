@@ -3,6 +3,7 @@
 namespace Dotburo\LogMetrics\Factories;
 
 use Dotburo\LogMetrics\LogMetricsConstants;
+use Dotburo\LogMetrics\Models\Event;
 use Dotburo\LogMetrics\Models\Metric;
 
 /**
@@ -13,7 +14,7 @@ use Dotburo\LogMetrics\Models\Metric;
  */
 class MetricFactory extends EventFactory
 {
-    public function add($key, $value = null, string $unit = '', string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory
+    public function add($key, $value = null, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
     {
         $metric = $key instanceof Metric
             ? $key
@@ -76,5 +77,12 @@ class MetricFactory extends EventFactory
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->items->map(function(Metric $metric) {
+            return trim("→ $metric->key: $metric->value $metric->unit");
+        })->join(PHP_EOL);
     }
 }

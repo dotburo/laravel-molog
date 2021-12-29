@@ -6,11 +6,18 @@ use Dotburo\LogMetrics\Exceptions\EventFactoryException;
 use Dotburo\LogMetrics\Models\Event;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Stringable;
 
-class EventFactory
+abstract class EventFactory implements Stringable
 {
     /** @var Collection */
     protected Collection $items;
+
+    /**
+     * Cast all events to a multiline string.
+     * @return string
+     */
+    abstract public function __toString(): string;
 
     /**
      * EventFactory constructor.

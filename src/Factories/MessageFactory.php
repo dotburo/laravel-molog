@@ -4,6 +4,7 @@ namespace Dotburo\LogMetrics\Factories;
 
 use Dotburo\LogMetrics\LogMetricsConstants;
 use Dotburo\LogMetrics\Models\Message;
+use Dotburo\LogMetrics\Models\Metric;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -81,5 +82,12 @@ class MessageFactory extends EventFactory implements LoggerInterface
         }
 
         return parent::__call($name, $arguments);
+    }
+
+    public function __toString(): string
+    {
+        return $this->items->map(function(Message $message) {
+            return "$message->created_at [$message->level] $message->body";
+        })->join(PHP_EOL);
     }
 }
