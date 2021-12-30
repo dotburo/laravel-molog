@@ -130,8 +130,14 @@ abstract class EventFactory implements Stringable
      * @param string $name
      * @return EventFactory
      */
-    public function setRelationGlobally($id, string $name = ''): EventFactory
+    public function setRelationGlobally($id = 0, string $name = ''): EventFactory
     {
+        if (!$id) {
+            $this->relationId = $this->relationName = null;
+
+            return $this;
+        }
+
         list($id, $name) = $this->resolveRelation($id, $name);
 
         $this->relationId = $id;
@@ -179,9 +185,9 @@ abstract class EventFactory implements Stringable
      * @param string $label
      * @return EventFactory
      */
-    public function setContextGlobally(string $label): EventFactory
+    public function setContextGlobally(string $label = ''): EventFactory
     {
-        $this->context = $label;
+        $this->context = $label ?: null;
 
         return $this;
     }
@@ -205,9 +211,9 @@ abstract class EventFactory implements Stringable
      * @param int $id
      * @return EventFactory
      */
-    public function setTenantGlobally(int $id): EventFactory
+    public function setTenantGlobally(int $id = 0): EventFactory
     {
-        $this->tenantId = $id;
+        $this->tenantId = $id ?: null;
 
         return $this;
     }
