@@ -109,7 +109,7 @@ class MetricFactory extends EventFactory
      */
     public function startTimer(string $key = 'duration'): MetricFactory
     {
-        return $this->add($key, microtime(true), 'float', 'ms');
+        return $this->add($key, microtime(true), 'float', 's');
     }
 
     /**
