@@ -21,10 +21,16 @@ class MetricFactory extends EventFactory
                 'key' => $key,
                 'value' => $value,
                 'unit' => $unit,
-                'type' => $type
+                'type' => $type,
             ]);
 
-        $this->items->offsetSet($metric->getKey(), $metric);
+        $metric = $this->setGlobalProperties($metric);
+
+        $uuid = $metric->getKey();
+
+        $this->items->offsetSet($uuid, $metric);
+
+        $this->setLastUuid($uuid);
 
         return $this;
     }
@@ -40,8 +46,11 @@ class MetricFactory extends EventFactory
 
     public function increment($key, $value = 0, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
     {
+        /** @var Metric $metric */
         if ($metric = $this->items->where('key', $key)->first()) {
             $metric->setValueAttribute($metric->value + $value);
+
+            $this->setLastUuid($metric->getKey());
 
             return $this;
         }
@@ -51,8 +60,11 @@ class MetricFactory extends EventFactory
 
     public function decrement($key, $value = 0, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
     {
+        /** @var Metric $metric */
         if ($metric = $this->items->where('key', $key)->first()) {
             $metric->setValueAttribute($metric->value - $value);
+
+            $this->setLastUuid($metric->getKey());
 
             return $this;
         }
@@ -60,41 +72,37 @@ class MetricFactory extends EventFactory
         return $this->add($key, $value, $type, $unit);
     }
 
-    public function setType(string $id, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory
+    public function setType(string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory
     {
-        /** @var Metric|null $metric */
-        if ($metric = $this->items->get($id)) {
-            $metric->setTypeAttribute($type);
+        if ($event = $this->previous()) {
+            $event->setTypeAttribute($type);
         }
 
         return $this;
     }
 
-    public function setUnit(string $id, string $unit): MetricFactory
+    public function setUnit(string $unit): MetricFactory
     {
-        /** @var Metric|null $metric */
-        if ($metric = $this->items->get($id)) {
-            $metric->setUnitAttribute($unit);
+        if ($event = $this->previous()) {
+            $event->setUnitAttribute($unit);
         }
 
         return $this;
     }
 
-    public function setKey(string $id, string $key): MetricFactory
+    public function setKey(string $key): MetricFactory
     {
-        /** @var Metric|null $metric */
-        if ($metric = $this->items->get($id)) {
-            $metric->setKeyAttribute($key);
+        if ($event = $this->previous()) {
+            $event->setKeyAttribute($key);
         }
 
         return $this;
     }
 
-    public function setValue(string $id, $value): MetricFactory
+    public function setValue($value): MetricFactory
     {
-        /** @var Metric|null $metric */
-        if ($metric = $this->items->get($id)) {
-            $metric->setValueAttribute($value);
+        if ($event = $this->previous()) {
+            $event->setValueAttribute($value);
         }
 
         return $this;

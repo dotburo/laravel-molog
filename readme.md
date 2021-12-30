@@ -36,17 +36,18 @@ class YourClass {
     {
         // Message examples
         
-        $this->message()
-            ->notice('Import process started')
+        $this->message('Import process initiated', LogLevel::INFO)
+            ->notice('Import process ongoing')
             ->warn('Import process aborted')
             ->save();
         
-        $this->message('Import process completed', LogLevel::WARNING)->save();
-
-        $this->message('Import process completed', LogLevel::WARNING)->last()->save();
+       $this->message()
+            ->setContextGlobally('Import process')
+            ->notice('ongoing')
+            ->warn('aborted')
+            ->setLevel(LogLevel::CRITICAL)
+            ->save();
         
-        
-       
         // Metric examples
         
         $this->metric('density', 5)->save();
@@ -57,7 +58,10 @@ class YourClass {
             new Metric(['key' => 'quality', 'value' => 3])
         ]);
         
-        $this->metrics()->setTenant(5)->setRelation($this->message()->last())->save();
+        $this->metrics()
+            ->setTenant(5)
+            ->setRelation($this->message()->previous())
+            ->save();
     }
 }
 ```
@@ -70,6 +74,7 @@ use Dotburo\LogMetrics\Factories\MetricFactory;
 use Psr\Log\LogLevel;
 
 $messageFactory = new MessageFactory();
+$messageFactory->setTenantGlobally(7);
 $messageFactory->add('Import process completed', LogLevel::NOTICE);
 $messageFactory->add('Bad air quality', LogLevel::WARNING);
 $messageFactory->setTenant(5);
@@ -81,12 +86,11 @@ $messageFactory->save();
 $messageFactory->reset();
 
 $metricFactory = new MetricFactory();
+$metricFactory->setRelationGlobally($messageFactory->previous());
 $metricFactory->add('pressure', 2.35, 'bar', 'int');
 $metricFactory->add('density', 5.43);
-$metricFactory->setTenant(5);
 $metricFactory->setContext('Import process');
-$metricFactory->setRelation($messageFactory->last());
-$metricFactory->last()->value = 5.45;
+$metricFactory->previous()->value = 5.45;
 $metricFactory->save();
 $metricFactory->reset();
 

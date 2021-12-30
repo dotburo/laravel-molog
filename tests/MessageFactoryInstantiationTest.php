@@ -19,7 +19,7 @@ it('can create, add and update messages', function () {
 
     /** @var Message $lastMessage */
     $lastMessage = $msgFactory->last();
-    $lastUuid = $lastMessage->getKey();
+    $lastUuid = $msgFactory->previousUuid();
 
     expect($lastUuid)->toMatch('#^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$#i');
 
@@ -29,7 +29,7 @@ it('can create, add and update messages', function () {
     expect($msgFactory->last()->body)->toBe('Test process initiated');
     expect($msgFactory->last()->level)->toBe(LogMetricsConstants::DEBUG);
 
-    $msgFactory->setBody($lastUuid, 'Test process begun');
+    $msgFactory->setBody('Test process begun');
     $lastMessage->level = LogMetricsConstants::INFO;
 
     expect($msgFactory->last()->body)->toBe('Test process begun');
@@ -39,5 +39,9 @@ it('can create, add and update messages', function () {
 
     expect($msgFactory->count())->toBe(2);
 
-    #expect((string)$msgFactory)->toBe("→ pressure: 2 bar" . PHP_EOL . "→ density 2: 3.35");
+    /*
+    expect((string)$msgFactory)->toBe(
+        "[notice] Test process started" . PHP_EOL
+        . '[info] testing: Test process begun'
+    );*/
 });

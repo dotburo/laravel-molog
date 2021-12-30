@@ -28,40 +28,55 @@ class MessageFactory extends EventFactory implements LoggerInterface
                 'body' => $body,
             ]);
 
-        $this->items->offsetSet($message->getKey(), $message);
+        $message = $this->setGlobalProperties($message);
+
+        $uuid = $message->getKey();
+
+        $this->items->offsetSet($uuid, $message);
+
+        $this->setLastUuid($uuid);
 
         return $this;
     }
 
     /**
-     * @param string $id
+     * Set the level last created/updated of the message.
      * @param string|int $level
      * @return $this
      */
-    public function setLevel(string $id, $level = LogMetricsConstants::DEBUG): MessageFactory
+    public function setLevel($level = LogMetricsConstants::DEBUG): MessageFactory
     {
-        /** @var Message|null $message */
-        if ($message = $this->items->get($id)) {
+        if ($message = $this->previous()) {
             $message->setLevelAttribute($level);
         }
 
         return $this;
     }
 
-    public function setBody(string $id, string $body): MessageFactory
+    /**
+     * Set the level last created/updated of the message.
+     * @param string $body
+     * @return $this
+     */
+    public function setBody(string $body): MessageFactory
     {
-        /** @var Message|null $message */
-        if ($message = $this->items->get($id)) {
+        if ($message = $this->previous()) {
             $message->setBodyAttribute($body);
         }
 
         return $this;
     }
 
+    /**
+     * Return the print-out of all current messages, most recent first.
+     * @return string
+     */
     public function __toString(): string
     {
         return $this->items->map(function(Message $message) {
-            return "$message->created_at [$message->level] $message->body";
+            $context = $message->context ? "$message->context: " : '';
+
+            return "$message->created_at [$message->level] {$context}$message->body";
         })->join(PHP_EOL);
     }
 

@@ -8,28 +8,29 @@ uses(RefreshDatabase::class);
 
 it('can create, add and update metrics', function () {
     $metricFactory = new MetricFactory();
+    $metricFactory->setTenantGlobally(5);
     $metricFactory->add('pressure', 2.35, 'int', 'bar');
     $metricFactory->add('density', 5.43);
-    $metricFactory->setTenant(5);
     $metricFactory->setContext('Import process');
     //$metricFactory->setRelation($messageFactory->last());
     $metricFactory->last()->value = 5;
     //$metricFactory->save();
-
+//dd($metricFactory->toArray());
     expect($metricFactory->count())->toBe(2);
     expect($metricFactory->last()->key)->toBe('density');
 
     /** @var Message $lastMetric */
     $lastMetric = $metricFactory->last();
-    $lastUuid = $lastMetric->getKey();
+    $lastUuid = $metricFactory->previousUuid();
 
     expect($lastUuid)->toMatch('#^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$#i');
     expect($metricFactory->last()->value)->toBe(5.0);
 
 
-    $metricFactory->setKey($lastUuid, 'density 2');
-    $metricFactory->setType($lastUuid, 'int');
-    $metricFactory->setValue($lastUuid, 6);
+    $metricFactory->setKey('density 2');
+    $metricFactory->setType('int');
+    $metricFactory->setValue(6);
+    $metricFactory->setTenant(7);
 
     expect($metricFactory->last()->value)->toBe(6);
 
@@ -38,11 +39,16 @@ it('can create, add and update metrics', function () {
 
     expect($metricFactory->last()->value)->toBe(3.35);
 
-    expect($metricFactory->last()->tenant_id)->toBe(5);
+
     expect($metricFactory->last()->key)->toBe('density 2');
+
+    expect($metricFactory->first()->tenant_id)->toBe(5);
+    expect($metricFactory->last()->tenant_id)->toBe(7);
+
+    expect($metricFactory->first()->context)->toBeNull();
     expect($metricFactory->last()->context)->toBe('Import process');
 
     expect($metricFactory->count())->toBe(2);
 
-    expect((string)$metricFactory)->toBe("→ pressure: 2 bar" . PHP_EOL . "→ density 2: 3.35");
+    expect((string)$metricFactory)->toBe("→ Import process: density 2: 3.35" . PHP_EOL . "→ pressure: 2 bar");
 });
