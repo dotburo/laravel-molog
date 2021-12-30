@@ -2,8 +2,10 @@
 
 namespace Dotburo\LogMetrics\Factories;
 
+use DateTimeImmutable;
 use Dotburo\LogMetrics\LogMetricsConstants;
 use Dotburo\LogMetrics\Models\Metric;
+use Illuminate\Support\Collection;
 
 /**
  * Metric factory class.
@@ -44,10 +46,18 @@ class MetricFactory extends EventFactory
         return $this;
     }
 
-    public function increment($key, $value = 0, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
+    /**
+     * Increment the metric for the given key and value.
+     * @param string $key
+     * @param int|float $value
+     * @param string $type
+     * @param string $unit
+     * @return $this
+     */
+    public function increment(string $key, $value = 1, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
     {
         /** @var Metric $metric */
-        if ($metric = $this->items->where('key', $key)->first()) {
+        if ($metric = $this->getMetricsByKey($key)->first()) {
             $metric->setValueAttribute($metric->value + $value);
 
             $this->setLastUuid($metric->getKey());
@@ -58,10 +68,18 @@ class MetricFactory extends EventFactory
         return $this->add($key, $value, $type, $unit);
     }
 
-    public function decrement($key, $value = 0, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
+    /**
+     * Decrement the metric for the given key and value.
+     * @param string $key
+     * @param int|float $value
+     * @param string $type
+     * @param string $unit
+     * @return $this
+     */
+    public function decrement(string $key, $value = 1, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
     {
         /** @var Metric $metric */
-        if ($metric = $this->items->where('key', $key)->first()) {
+        if ($metric = $this->getMetricsByKey($key)->first()) {
             $metric->setValueAttribute($metric->value - $value);
 
             $this->setLastUuid($metric->getKey());
@@ -70,6 +88,48 @@ class MetricFactory extends EventFactory
         }
 
         return $this->add($key, $value, $type, $unit);
+    }
+
+    /**
+     * @param string $key
+     * @param bool $contextRelative
+     * @return Collection
+     */
+    protected function getMetricsByKey(string $key, bool $contextRelative = true): Collection
+    {
+        return $this->items->filter(function(Metric $metric) use ($key, $contextRelative) {
+            return $metric->key === $key && (!$contextRelative || $metric->context === $this->context);
+        });
+    }
+
+    /**
+     * Initiate a timing measurement.
+     * @param string $key
+     * @return $this
+     */
+    public function startTimer(string $key = 'duration'): MetricFactory
+    {
+        return $this->add($key, new DateTimeImmutable(), 'float', 'ms');
+    }
+
+    /**
+     * Calculate the time difference with a previously set metric with the same key.
+     * @param string $key
+     * @return $this
+     */
+    public function stopTimer(string $key = 'duration'): MetricFactory
+    {
+        if (!($metric = $this->items->where('key', $key)->first())) {
+            return $this;
+        }
+
+        $metric->setValueAttribute(
+            $metric->value->diff(new DateTimeImmutable())->format('%H:%I:%S.%F')
+        );
+
+        $this->setLastUuid($metric->getKey());
+
+        return $this;
     }
 
     public function setType(string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory
