@@ -101,7 +101,7 @@ abstract class EventFactory implements Stringable
      */
     public function previous(): ?Event
     {
-        return !empty($this->lastUuid) ? $this->items->get($this->lastUuid) : null;
+        return ! empty($this->lastUuid) ? $this->items->get($this->lastUuid) : null;
     }
 
     /**
@@ -132,7 +132,7 @@ abstract class EventFactory implements Stringable
      */
     public function setRelationGlobally($id = 0, string $name = ''): EventFactory
     {
-        if (!$id) {
+        if (! $id) {
             $this->relationId = $this->relationName = null;
 
             return $this;
@@ -159,7 +159,7 @@ abstract class EventFactory implements Stringable
 
         $relationId = $modelInstance ? $id->getKey() : $id;
 
-        $relationName = !$name && $modelInstance ? get_class($id) : $name;
+        $relationName = ! $name && $modelInstance ? get_class($id) : $name;
 
         return [$relationId, $relationName];
     }
@@ -227,7 +227,7 @@ abstract class EventFactory implements Stringable
      */
     public function __call(string $name, array $arguments)
     {
-        if (!method_exists($this->items, $name)) {
+        if (! method_exists($this->items, $name)) {
             throw new EventFactoryException("The method '$name' is not implemented.");
         }
 

@@ -97,8 +97,8 @@ class MetricFactory extends EventFactory
      */
     protected function getMetricsByKey(string $key, bool $contextRelative = true): Collection
     {
-        return $this->items->filter(function(Metric $metric) use ($key, $contextRelative) {
-            return $metric->key === $key && (!$contextRelative || $metric->context === $this->context);
+        return $this->items->filter(function (Metric $metric) use ($key, $contextRelative) {
+            return $metric->key === $key && (! $contextRelative || $metric->context === $this->context);
         });
     }
 
@@ -119,7 +119,7 @@ class MetricFactory extends EventFactory
      */
     public function stopTimer(string $key = 'duration'): MetricFactory
     {
-        if (!($metric = $this->items->where('key', $key)->first())) {
+        if (! ($metric = $this->items->where('key', $key)->first())) {
             return $this;
         }
 
@@ -170,7 +170,7 @@ class MetricFactory extends EventFactory
 
     public function __toString(): string
     {
-        return $this->items->map(function(Metric $metric) {
+        return $this->items->map(function (Metric $metric) {
             $context = $metric->context ? "$metric->context: " : '';
 
             return trim("→ {$context}$metric->key: $metric->value $metric->unit");

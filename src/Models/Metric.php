@@ -25,12 +25,12 @@ class Metric extends Event
     /** @inheritDoc */
     protected $casts = [
         'value' => 'float',
-        'created_at' => 'datetime'
+        'created_at' => 'datetime',
     ];
 
     public function setTypeAttribute(?string $type): Metric
     {
-        $this->attributes['type'] = !empty($type) ? strtolower($type) : LogMetricsConstants::DEFAULT_METRIC_TYPE;
+        $this->attributes['type'] = ! empty($type) ? strtolower($type) : LogMetricsConstants::DEFAULT_METRIC_TYPE;
 
         return $this;
     }

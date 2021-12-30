@@ -24,7 +24,7 @@ class Message extends Event
     /** @inheritDoc */
     protected $casts = [
         'level' => 'int',
-        'created_at' => 'datetime'
+        'created_at' => 'datetime',
     ];
 
     /**

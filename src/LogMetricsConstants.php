@@ -13,7 +13,7 @@ use Psr\Log\LogLevel;
 final class LogMetricsConstants extends LogLevel
 {
     /** @var int[] */
-    const LEVEL_CODES = [
+    public const LEVEL_CODES = [
         parent::EMERGENCY => 0,
         parent::ALERT => 1,
         parent::CRITICAL => 2,
@@ -25,5 +25,5 @@ final class LogMetricsConstants extends LogLevel
     ];
 
     /** @var string */
-    const DEFAULT_METRIC_TYPE = 'float';
+    public const DEFAULT_METRIC_TYPE = 'float';
 }

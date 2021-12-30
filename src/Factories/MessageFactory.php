@@ -73,7 +73,7 @@ class MessageFactory extends EventFactory implements LoggerInterface
      */
     public function __toString(): string
     {
-        return $this->items->map(function(Message $message) {
+        return $this->items->map(function (Message $message) {
             $context = $message->context ? "$message->context: " : '';
 
             return "$message->created_at [$message->level] {$context}$message->body";

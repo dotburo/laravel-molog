@@ -15,7 +15,7 @@ it('can create, add and update metrics', function () {
     //$metricFactory->setRelation($messageFactory->last());
     $metricFactory->last()->value = 5;
     //$metricFactory->save();
-//dd($metricFactory->toArray());
+    //dd($metricFactory->toArray());
     expect($metricFactory->count())->toBe(2);
     expect($metricFactory->last()->key)->toBe('density');
 

@@ -23,7 +23,7 @@ use Illuminate\Support\Str;
 class Event extends Model
 {
     /** @inheritDoc */
-    const UPDATED_AT = null;
+    public const UPDATED_AT = null;
 
     /** @inheritDoc */
     public $incrementing = false;
@@ -59,7 +59,7 @@ class Event extends Model
 
         $keyName = $this->getKeyName();
 
-        if (!$this->getAttribute($keyName)) {
+        if (! $this->getAttribute($keyName)) {
             $this->setAttribute($keyName, Str::uuid()->toString());
 
             $this->updateTimestamps();
@@ -124,5 +124,4 @@ class Event extends Model
 
         return $this;
     }
-
 }
