@@ -3,6 +3,8 @@
 namespace Dotburo\LogMetrics\Models;
 
 use Carbon\Carbon;
+use DateTime;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Str;
@@ -50,7 +52,7 @@ class Event extends Model
     }
 
     /**
-     * Override the constructor to give the model an UUID as primary key if it isn't assigned yet.
+     * Override the constructor to give the model a timestamp and an UUID as primary key if it isn't assigned yet.
      * {@inheritDoc}
      */
     public function __construct(array $attributes = [])
@@ -61,7 +63,20 @@ class Event extends Model
 
         if (!$this->getAttribute($keyName)) {
             $this->setAttribute($keyName, Str::uuid()->toString());
+
+            $this->updateTimestamps();
         }
+    }
+
+    /**
+     * Save the time with millisecond precision.
+     * {@inheritDoc}
+     */
+    public function setCreatedAt($value)
+    {
+        $this->{$this->getCreatedAtColumn()} = $value->format('Y-m-d H:i:s.u');
+
+        return $this;
     }
 
     /**

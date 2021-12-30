@@ -77,7 +77,8 @@ $messageFactory->setRelation($yourModel);
 $messageFactory->setContext('Import process');
 #$messageFactory->setLevel('key', LogLevel::ERROR);
 #$messageFactory->setBody('key', 'Air quality import process completed');
-$messageFactory->save(false);
+$messageFactory->save();
+$messageFactory->reset();
 
 $metricFactory = new MetricFactory();
 $metricFactory->add('pressure', 2.35, 'bar', 'int');
@@ -87,6 +88,8 @@ $metricFactory->setContext('Import process');
 $metricFactory->setRelation($messageFactory->last());
 $metricFactory->last()->value = 5.45;
 $metricFactory->save();
+$metricFactory->reset();
+
 ```
 
 ## Testing
