@@ -109,7 +109,7 @@ class MetricFactory extends EventFactory
      */
     public function startTimer(string $key = 'duration'): MetricFactory
     {
-        return $this->add($key, new DateTimeImmutable(), 'float', 'ms');
+        return $this->add($key, microtime(true), 'float', 'ms');
     }
 
     /**
@@ -123,9 +123,7 @@ class MetricFactory extends EventFactory
             return $this;
         }
 
-        $metric->setValueAttribute(
-            $metric->value->diff(new DateTimeImmutable())->format('%H:%I:%S.%F')
-        );
+        $metric->setValueAttribute(microtime(true) - $metric->value);
 
         $this->setLastUuid($metric->getKey());
 
