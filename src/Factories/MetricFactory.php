@@ -2,7 +2,6 @@
 
 namespace Dotburo\LogMetrics\Factories;
 
-use DateTimeImmutable;
 use Dotburo\LogMetrics\LogMetricsConstants;
 use Dotburo\LogMetrics\Models\Metric;
 use Illuminate\Support\Collection;

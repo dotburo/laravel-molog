@@ -1,6 +1,5 @@
 <?php
 
-use Dotburo\LogMetrics\Factories\MessageFactory;
 use Dotburo\LogMetrics\LogMetricsConstants;
 use Dotburo\LogMetrics\Models\Message;
 use Dotburo\LogMetrics\Tests\Logs;
