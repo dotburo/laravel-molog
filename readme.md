@@ -18,7 +18,7 @@ composer require dotburo/laravel-log-metrics
 You can publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --provider="dotburo\LogMetrics\LogMetricsServiceProvider" --tag="laravel-log-metrics-migrate"
+php artisan vendor:publish --provider="Dotburo\LogMetrics\LogMetricsServiceProvider" --tag="laravel-log-metrics-migrate"
 php artisan migrate
 ```
 
