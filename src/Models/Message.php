@@ -37,14 +37,27 @@ class Message extends Event
     }
 
     /**
-     * Return the code for the given level.
+     * Return the code for the given level(s).
      * This returns the debug level code as fallback value.
-     * @param string $level
-     * @return int
+     * @param string|string[] $levels
+     * @return int|int[]
      */
-    public static function levelCode(string $level): int
+    public static function levelCode($levels)
     {
-        return LogMetricsConstants::LEVEL_CODES[$level] ?? LogMetricsConstants::LEVEL_CODES[LogMetricsConstants::DEBUG];
+        if (is_string($levels)) {
+            $levels = explode(',', $levels);
+        }
+
+        $levels = array_intersect(
+            array_map('trim', $levels),
+            array_keys(LogMetricsConstants::LEVEL_CODES)
+        );
+
+        $codes = array_map(function($level) {
+            return LogMetricsConstants::LEVEL_CODES[$level] ?? LogMetricsConstants::LEVEL_CODES[LogMetricsConstants::DEBUG];
+        }, $levels);
+
+        return count($levels) > 1 ? $codes : reset($codes);
     }
 
     /**

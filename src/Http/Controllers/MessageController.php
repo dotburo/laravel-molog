@@ -2,6 +2,7 @@
 
 namespace Dotburo\LogMetrics\Http\Controllers;
 
+use Dotburo\LogMetrics\LogMetricsConstants;
 use Dotburo\LogMetrics\Models\Message;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Http\Request;
@@ -20,6 +21,10 @@ class MessageController extends BaseController
 
         if ($request->boolean('metrics', true)) {
             $query->with('metrics');
+        }
+
+        if ($levels = $request->get('levels')) {
+            $query->whereIn('level', (array)Message::levelCode($levels));
         }
 
         $perPage = config('log-metrics.per-page');
