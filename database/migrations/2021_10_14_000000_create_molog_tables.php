@@ -29,7 +29,7 @@ class CreateMologTables extends Migration
             $table->unsignedTinyInteger('level')->default($debugLevelCode)->index();
 
             $table->string('subject');
-            $table->longText('body');
+            $table->longText('body')->nullable();
 
             $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->unsignedBigInteger('tenant_id')->nullable()->index();
@@ -38,7 +38,7 @@ class CreateMologTables extends Migration
         });
 
         # Metrics table.
-        Schema::create('metrics', function (Blueprint $table) use ($pkType) {
+        Schema::create('gauges', function (Blueprint $table) use ($pkType) {
             $table = $this->setPrimaryKey($table, $pkType);
 
             $table = $this->setNullableMorphColumns($table, $pkType);
@@ -64,7 +64,7 @@ class CreateMologTables extends Migration
     public function down()
     {
         Schema::dropIfExists('messages');
-        Schema::dropIfExists('metrics');
+        Schema::dropIfExists('gauges');
     }
 
     /**

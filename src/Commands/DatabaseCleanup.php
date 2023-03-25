@@ -4,7 +4,7 @@ namespace Dotburo\Molog\Commands;
 
 use Carbon\Carbon;
 use Dotburo\Molog\Models\Message;
-use Dotburo\Molog\Models\Metric;
+use Dotburo\Molog\Models\Gauge;
 use Illuminate\Console\Command;
 
 /**
@@ -29,21 +29,21 @@ class DatabaseCleanup extends Command
     {
         $time = Carbon::parse($this->argument('datetime'));
 
-        $this->info("Deleting messages and metrics older than {$time->toDateTimeString()}...");
+        $this->info("Deleting messages and gauges older than {$time->toDateTimeString()}...");
 
         $messages = Message::query()
             ->where('created_at', '<=', $time)
             ->get();
 
         $messages->each(function (Message $message) {
-            $message->metrics()->delete();
+            $message->gauges()->delete();
         });
 
         Message::query()
             ->where('created_at', '<=', $time)
             ->delete();
 
-        Metric::query()
+        Gauge::query()
             ->where('created_at', '<=', $time)
             ->delete();
 

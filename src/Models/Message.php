@@ -18,7 +18,7 @@ class Message extends Event
 {
     /** @inheritDoc  */
     protected $fillable = [
-        'level', 'body',
+        'level', 'subject', 'body',
     ];
 
     /** @inheritDoc */
@@ -28,12 +28,12 @@ class Message extends Event
     ];
 
     /**
-     * Optional relationship with child metrics.
+     * Optional relationship with child gauges.
      * @return MorphMany
      */
-    public function metrics(): MorphMany
+    public function gauges(): MorphMany
     {
-        return $this->morphMany(Metric::class, 'loggable');
+        return $this->morphMany(Gauge::class, 'loggable');
     }
 
     /**
@@ -96,10 +96,10 @@ class Message extends Event
 
     /**
      * Make sure the body is set as a string or null.
-     * @param string $body
+     * @param string|null $body
      * @return Message
      */
-    public function setBodyAttribute(string $body): Message
+    public function setBodyAttribute(?string $body = null): Message
     {
         $this->attributes['body'] = $body ?: null;
 

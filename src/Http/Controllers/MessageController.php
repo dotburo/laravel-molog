@@ -19,8 +19,8 @@ class MessageController extends BaseController
     {
         $query = Message::query();
 
-        if ($request->boolean('metrics', true)) {
-            $query->with('metrics');
+        if ($request->boolean('gauges', true)) {
+            $query->with('gauges');
         }
 
         if ($levels = $request->get('levels')) {
@@ -31,7 +31,7 @@ class MessageController extends BaseController
 
         $direction = $request->get('order', 'desc');
 
-        $perPage = $request->get('per_page', config('log-metrics.per_page'));
+        $perPage = $request->get('per_page', config('molog.per_page'));
 
         return $query
             ->orderBy($orderBy, $direction)

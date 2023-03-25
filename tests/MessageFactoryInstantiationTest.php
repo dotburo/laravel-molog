@@ -15,7 +15,7 @@ it('can create, add and update messages', function () {
     $msgFactory->setContext('testing');
 
     expect($msgFactory->count())->toBe(2);
-    expect($msgFactory->last()->body)->toBe('Test process continued');
+    expect($msgFactory->last()->subject)->toBe('Test process continued');
 
     /** @var Message $lastMessage */
     $lastMessage = $msgFactory->last();
@@ -23,10 +23,10 @@ it('can create, add and update messages', function () {
 
     expect($lastUuid)->toMatch('#^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$#i');
 
-    $lastMessage->body = 'Test process initiated';
+    $lastMessage->subject = 'Test process initiated';
     $lastMessage->level = Constants::DEBUG;
 
-    expect($msgFactory->last()->body)->toBe('Test process initiated');
+    expect($msgFactory->last()->subject)->toBe('Test process initiated');
     expect($msgFactory->last()->level)->toBe(Constants::DEBUG);
 
     $msgFactory->setBody('Test process begun');

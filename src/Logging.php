@@ -3,8 +3,8 @@
 namespace Dotburo\Molog;
 
 use Dotburo\Molog\Factories\MessageFactory;
-use Dotburo\Molog\Factories\MetricFactory;
-use Dotburo\Molog\Models\Metric;
+use Dotburo\Molog\Factories\GaugeFactory;
+use Dotburo\Molog\Models\Gauge;
 
 /**
  * Provides logging.
@@ -17,21 +17,21 @@ trait Logging
     /** @var MessageFactory */
     private MessageFactory $messageFactory;
 
-    /** @var MetricFactory */
-    private MetricFactory $metricFactory;
+    /** @var GaugeFactory */
+    private GaugeFactory $gaugeFactory;
 
     /**
      * Return the existing factory or instantiate a new one.
-     * @param string $body
+     * @param string $subject
      * @param string $level
      * @return MessageFactory
      */
-    public function message(string $body = '', string $level = Constants::DEBUG): MessageFactory
+    public function message(string $subject = '', string $level = Constants::DEBUG): MessageFactory
     {
         $factory = $this->messageFactory ?? $this->messageFactory = new MessageFactory();
 
-        if ($body) {
-            $this->messageFactory->add($body, $level);
+        if ($subject) {
+            $this->messageFactory->add($subject, $level);
         }
 
         return $factory;
@@ -43,14 +43,14 @@ trait Logging
      * @param int|float $value
      * @param string|null $unit
      * @param string $type
-     * @return MetricFactory
+     * @return GaugeFactory
      */
-    public function metric(string $key = '', $value = 0, string $type = Constants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
+    public function gauge(string $key = '', $value = 0, string $type = Constants::DEFAULT_METRIC_TYPE, string $unit = ''): GaugeFactory
     {
-        $factory = $this->metricFactory ?? $this->metricFactory = new MetricFactory();
+        $factory = $this->gaugeFactory ?? $this->gaugeFactory = new GaugeFactory();
 
         if ($key) {
-            $this->metricFactory->add($key, $value, $type, $unit);
+            $this->gaugeFactory->add($key, $value, $type, $unit);
         }
 
         return $factory;
@@ -58,15 +58,15 @@ trait Logging
 
     /**
      * Create a JobLog instance for the parent class.
-     * @param Metric[]|array[] $metrics
-     * @return MetricFactory
+     * @param Gauge[]|array[] $gauges
+     * @return GaugeFactory
      */
-    public function metrics(array $metrics = []): MetricFactory
+    public function gauges(array $gauges = []): GaugeFactory
     {
-        $factory = $this->metricFactory ?? $this->metricFactory = new MetricFactory();
+        $factory = $this->gaugeFactory ?? $this->gaugeFactory = new GaugeFactory();
 
-        if ($metrics) {
-            $this->metricFactory->addMany($metrics);
+        if ($gauges) {
+            $this->gaugeFactory->addMany($gauges);
         }
 
         return $factory;

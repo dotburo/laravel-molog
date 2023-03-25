@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Str;
 
 /**
- * Base model for logged messages and metrics.
+ * Base model for logged messages and gauges.
  *
  * @property int $id
  * @property int $tenant_id

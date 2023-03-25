@@ -5,7 +5,7 @@ namespace Dotburo\Molog\Factories;
 use Dotburo\Molog\Exceptions\EventFactoryException;
 use Dotburo\Molog\Models\Event;
 use Dotburo\Molog\Models\Message;
-use Dotburo\Molog\Models\Metric;
+use Dotburo\Molog\Models\Gauge;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Stringable;
@@ -97,7 +97,7 @@ abstract class EventFactory implements Stringable
 
     /**
      * Return the last created or updated event.
-     * @return Event|Metric|Message|null
+     * @return Event|Gauge|Message|null
      */
     public function previous(): ?Event
     {

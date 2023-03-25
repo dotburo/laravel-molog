@@ -25,7 +25,7 @@ php artisan migrate
 ## Logging trait examples
 
 ```php
-use Dotburo\Molog\Models\Metric;
+use Dotburo\Molog\Models\Gauge;
 use Dotburo\Molog\Logging;
 use Psr\Log\LogLevel;
 
@@ -48,17 +48,17 @@ class YourClass {
             ->setLevel(LogLevel::CRITICAL)
             ->save();
         
-        // Metric examples
+        // Gauge examples
         
-        $this->metric('density', 5)->save();
+        $this->gauge('density', 5)->save();
         
-        $this->metrics([
+        $this->gauges([
             ['key' => 'density', 'value' => 5.3567],
             ['key' => 'pressure', 'value' => 2.35, 'unit' => 'bar', 'type' => 'int'],
-            new Metric(['key' => 'quality', 'value' => 3])
+            new Gauge(['key' => 'quality', 'value' => 3])
         ]);
         
-        $this->metrics()
+        $this->gauges()
             ->setTenant(5)
             ->setRelation($this->message()->previous())
             ->save();
@@ -70,7 +70,7 @@ class YourClass {
 
 ```php
 use Dotburo\Molog\Factories\MessageFactory;
-use Dotburo\Molog\Factories\MetricFactory;
+use Dotburo\Molog\Factories\GaugeFactory;
 use Psr\Log\LogLevel;
 
 $messageFactory = new MessageFactory();
@@ -85,14 +85,14 @@ $messageFactory->setContext('Import process');
 $messageFactory->save();
 $messageFactory->reset();
 
-$metricFactory = new MetricFactory();
-$metricFactory->setRelationGlobally($messageFactory->previous());
-$metricFactory->add('pressure', 2.35, 'bar', 'int');
-$metricFactory->add('density', 5.43);
-$metricFactory->setContext('Import process');
-$metricFactory->previous()->value = 5.45;
-$metricFactory->save();
-$metricFactory->reset();
+$gaugeFactory = new GaugeFactory();
+$gaugeFactory->setRelationGlobally($messageFactory->previous());
+$gaugeFactory->add('pressure', 2.35, 'bar', 'int');
+$gaugeFactory->add('density', 5.43);
+$gaugeFactory->setContext('Import process');
+$gaugeFactory->previous()->value = 5.45;
+$gaugeFactory->save();
+$gaugeFactory->reset();
 
 ```
 

@@ -15,17 +15,17 @@ use Psr\Log\LoggerInterface;
 class MessageFactory extends EventFactory implements LoggerInterface
 {
     /**
-     * @param string $body
+     * @param string $subject
      * @param string|int $level
      * @return $this
      */
-    public function add(string $body = '', $level = Constants::DEBUG): MessageFactory
+    public function add(string $subject = '', $level = Constants::DEBUG): MessageFactory
     {
-        $message = $body instanceof Message
-            ? $body
+        $message = $subject instanceof Message
+            ? $subject
             : new Message([
                 'level' => $level,
-                'body' => $body,
+                'subject' => $subject,
             ]);
 
         $message = $this->setGlobalProperties($message);
@@ -55,10 +55,10 @@ class MessageFactory extends EventFactory implements LoggerInterface
 
     /**
      * Set the level last created/updated of the message.
-     * @param string $body
+     * @param string|null $body
      * @return $this
      */
-    public function setBody(string $body): MessageFactory
+    public function setBody(?string $body = null): MessageFactory
     {
         if ($message = $this->previous()) {
             $message->setBodyAttribute($body);
