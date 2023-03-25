@@ -1,6 +1,6 @@
 {
-    "name": "dotburo/laravel-log-metrics",
-    "description": "Simple Laravel tool to log messages and metrics to a database",
+    "name": "dotburo/laravel-molog",
+    "description": "Laravel tool to log model-specific messages and metrics to a database",
     "version": "0.10.0",
     "keywords": [
         "dotburo",
@@ -8,7 +8,7 @@
         "logging",
         "mertics"
     ],
-    "homepage": "https://github.com/dotburo/laravel-log-metrics",
+    "homepage": "https://github.com/dotburo/laravel-molog",
     "license": "GPL-3.0-or-later",
     "authors": [
         {
@@ -18,8 +18,11 @@
         }
     ],
     "require": {
-        "php": "^7.4",
-        "psr/log": "^1.1"
+        "php": "^7.4 || ^8",
+        "psr/log": "^1.1",
+        "illuminate/config": "^7.4 || ^8.0 || ^9.0 || ^10.0",
+        "illuminate/database": "^7.4 || ^8.0 || ^9.0 || ^10.0",
+        "illuminate/support": "^7.4 || ^8.0 || ^9.0 || ^10.0"
     },
     "require-dev": {
         "nunomaduro/collision": "^5.3",
@@ -30,12 +33,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Dotburo\\LogMetrics\\": "src"
+            "Dotburo\\Molog\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Dotburo\\LogMetrics\\Tests\\": "tests"
+            "Dotburo\\Molog\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -52,7 +55,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Dotburo\\LogMetrics\\LogMetricsServiceProvider"
+                "Dotburo\\Molog\\MologServiceProvider"
             ]
         }
     },

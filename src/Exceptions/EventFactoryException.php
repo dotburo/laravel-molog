@@ -1,6 +1,6 @@
 <?php
 
-namespace Dotburo\LogMetrics\Exceptions;
+namespace Dotburo\Molog\Exceptions;
 
 use Exception;
 

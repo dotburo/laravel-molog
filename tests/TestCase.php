@@ -1,8 +1,8 @@
 <?php
 
-namespace Dotburo\LogMetrics\Tests;
+namespace Dotburo\Molog\Tests;
 
-use Dotburo\LogMetrics\LogMetricsServiceProvider;
+use Dotburo\Molog\MologServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -13,14 +13,14 @@ class TestCase extends Orchestra
         parent::setUp();
 
         //Factory::guessFactoryNamesUsing(
-        //    fn (string $modelName) => 'Dotburo\\LogMetrics\\Database\\Factories\\'.class_basename($modelName).'Factory'
+        //    fn (string $modelName) => 'Dotburo\\Molog\\Database\\Factories\\'.class_basename($modelName).'Factory'
         //);
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            LogMetricsServiceProvider::class,
+            MologServiceProvider::class,
         ];
     }
 
@@ -28,7 +28,7 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
-        //$migration = include __DIR__. '/../database/migrations/2021_10_14_000000_create_log_metrics_tables.php';
+        //$migration = include __DIR__. '/../database/migrations/2021_10_14_000000_create_molog_tables.php';
         //$migration->up();
     }
 }

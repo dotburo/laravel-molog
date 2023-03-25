@@ -1,9 +1,9 @@
 <?php
 
-namespace Dotburo\LogMetrics\Factories;
+namespace Dotburo\Molog\Factories;
 
-use Dotburo\LogMetrics\LogMetricsConstants;
-use Dotburo\LogMetrics\Models\Message;
+use Dotburo\Molog\Constants;
+use Dotburo\Molog\Models\Message;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -19,7 +19,7 @@ class MessageFactory extends EventFactory implements LoggerInterface
      * @param string|int $level
      * @return $this
      */
-    public function add(string $body = '', $level = LogMetricsConstants::DEBUG): MessageFactory
+    public function add(string $body = '', $level = Constants::DEBUG): MessageFactory
     {
         $message = $body instanceof Message
             ? $body
@@ -44,7 +44,7 @@ class MessageFactory extends EventFactory implements LoggerInterface
      * @param string|int $level
      * @return $this
      */
-    public function setLevel($level = LogMetricsConstants::DEBUG): MessageFactory
+    public function setLevel($level = Constants::DEBUG): MessageFactory
     {
         if ($message = $this->previous()) {
             $message->setLevelAttribute($level);
@@ -82,49 +82,49 @@ class MessageFactory extends EventFactory implements LoggerInterface
 
     public function emergency($message, array $context = []): MessageFactory
     {
-        $this->add($message, LogMetricsConstants::EMERGENCY);
+        $this->add($message, Constants::EMERGENCY);
 
         return $this;
     }
 
     public function alert($message, array $context = []): MessageFactory
     {
-        $this->add($message, LogMetricsConstants::ALERT);
+        $this->add($message, Constants::ALERT);
 
         return $this;
     }
 
     public function critical($message, array $context = []): MessageFactory
     {
-        $this->add($message, LogMetricsConstants::CRITICAL);
+        $this->add($message, Constants::CRITICAL);
 
         return $this;
     }
 
     public function error($message, array $context = []): MessageFactory
     {
-        $this->add($message, LogMetricsConstants::ERROR);
+        $this->add($message, Constants::ERROR);
 
         return $this;
     }
 
     public function warning($message, array $context = []): MessageFactory
     {
-        $this->add($message, LogMetricsConstants::WARNING);
+        $this->add($message, Constants::WARNING);
 
         return $this;
     }
 
     public function notice($message, array $context = []): MessageFactory
     {
-        $this->add($message, LogMetricsConstants::NOTICE);
+        $this->add($message, Constants::NOTICE);
 
         return $this;
     }
 
     public function info($message, array $context = []): MessageFactory
     {
-        $this->add($message, LogMetricsConstants::INFO);
+        $this->add($message, Constants::INFO);
 
         return $this;
     }

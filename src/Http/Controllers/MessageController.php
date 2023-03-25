@@ -1,9 +1,9 @@
 <?php
 
-namespace Dotburo\LogMetrics\Http\Controllers;
+namespace Dotburo\Molog\Http\Controllers;
 
-use Dotburo\LogMetrics\LogMetricsConstants;
-use Dotburo\LogMetrics\Models\Message;
+use Dotburo\Molog\Constants;
+use Dotburo\Molog\Models\Message;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -27,10 +27,14 @@ class MessageController extends BaseController
             $query->whereIn('level', (array)Message::levelCode($levels));
         }
 
-        $perPage = config('log-metrics.per-page');
+        $orderBy = $request->get('order_by', 'created_at');
+
+        $direction = $request->get('order', 'desc');
+
+        $perPage = $request->get('per_page', config('log-metrics.per_page'));
 
         return $query
-            ->orderBy('created_at', 'desc')
+            ->orderBy($orderBy, $direction)
             ->paginate($perPage);
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace Dotburo\LogMetrics\Commands;
+namespace Dotburo\Molog\Commands;
 
 use Carbon\Carbon;
-use Dotburo\LogMetrics\Models\Message;
-use Dotburo\LogMetrics\Models\Metric;
+use Dotburo\Molog\Models\Message;
+use Dotburo\Molog\Models\Metric;
 use Illuminate\Console\Command;
 
 /**
@@ -16,7 +16,7 @@ use Illuminate\Console\Command;
 class DatabaseCleanup extends Command
 {
     /** @inheritDoc */
-    protected $signature = 'log-metrics:database:cleanup {datetime : Parsable datetime format}';
+    protected $signature = 'molog:db:cleanup {datetime : Parsable datetime format}';
 
     /** @inheritDoc */
     protected $description = 'Delete records older than the given time';

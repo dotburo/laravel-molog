@@ -1,9 +1,9 @@
-# Laravel log metrics
+# Laravel Molog
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/dotburo/laravel-log-metrics.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-log-metrics)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/dotburo/laravel-log-metrics/run-tests?label=tests)](https://github.com/dotburo/laravel-log-metrics/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/dotburo/laravel-log-metrics/Check%20&%20fix%20styling?label=code%20style)](https://github.com/dotburo/laravel-log-metrics/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/dotburo/laravel-log-metrics.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-log-metrics)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/dotburo/laravel-molog.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-molog)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/dotburo/laravel-molog/run-tests?label=tests)](https://github.com/dotburo/laravel-molog/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/dotburo/laravel-molog/Check%20&%20fix%20styling?label=code%20style)](https://github.com/dotburo/laravel-molog/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/dotburo/laravel-molog.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-molog)
 
 **In development!** Simple Laravel tool to log messages and metrics to a database.
 
@@ -12,21 +12,21 @@
 You can install the package via composer:
 
 ```bash
-composer require dotburo/laravel-log-metrics
+composer require dotburo/laravel-molog
 ```
 
 You can publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --provider="Dotburo\LogMetrics\LogMetricsServiceProvider" --tag="laravel-log-metrics-migrate"
+php artisan vendor:publish --provider="Dotburo\Molog\MologServiceProvider" --tag="laravel-molog-migrate"
 php artisan migrate
 ```
 
 ## Logging trait examples
 
 ```php
-use Dotburo\LogMetrics\Models\Metric;
-use Dotburo\LogMetrics\Logging;
+use Dotburo\Molog\Models\Metric;
+use Dotburo\Molog\Logging;
 use Psr\Log\LogLevel;
 
 class YourClass {
@@ -69,8 +69,8 @@ class YourClass {
 ## Factory instantiation examples
 
 ```php
-use Dotburo\LogMetrics\Factories\MessageFactory;
-use Dotburo\LogMetrics\Factories\MetricFactory;
+use Dotburo\Molog\Factories\MessageFactory;
+use Dotburo\Molog\Factories\MetricFactory;
 use Psr\Log\LogLevel;
 
 $messageFactory = new MessageFactory();

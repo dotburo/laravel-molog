@@ -1,7 +1,7 @@
 <?php
 
-use Dotburo\LogMetrics\Factories\MetricFactory;
-use Dotburo\LogMetrics\Models\Message;
+use Dotburo\Molog\Factories\MetricFactory;
+use Dotburo\Molog\Models\Message;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

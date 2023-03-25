@@ -1,9 +1,9 @@
 <?php
 
-namespace Dotburo\LogMetrics\Factories;
+namespace Dotburo\Molog\Factories;
 
-use Dotburo\LogMetrics\LogMetricsConstants;
-use Dotburo\LogMetrics\Models\Metric;
+use Dotburo\Molog\Constants;
+use Dotburo\Molog\Models\Metric;
 use Illuminate\Support\Collection;
 
 /**
@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
  */
 class MetricFactory extends EventFactory
 {
-    public function add($key, $value = 0, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
+    public function add($key, $value = 0, string $type = Constants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
     {
         $metric = $key instanceof Metric
             ? $key
@@ -53,7 +53,7 @@ class MetricFactory extends EventFactory
      * @param string $unit
      * @return $this
      */
-    public function increment(string $key, $value = 1, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
+    public function increment(string $key, $value = 1, string $type = Constants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
     {
         /** @var Metric $metric */
         if ($metric = $this->getMetricsByKey($key)->first()) {
@@ -75,7 +75,7 @@ class MetricFactory extends EventFactory
      * @param string $unit
      * @return $this
      */
-    public function decrement(string $key, $value = 1, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
+    public function decrement(string $key, $value = 1, string $type = Constants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
     {
         /** @var Metric $metric */
         if ($metric = $this->getMetricsByKey($key)->first()) {
@@ -129,7 +129,7 @@ class MetricFactory extends EventFactory
         return $this;
     }
 
-    public function setType(string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE): MetricFactory
+    public function setType(string $type = Constants::DEFAULT_METRIC_TYPE): MetricFactory
     {
         if ($event = $this->previous()) {
             $event->setTypeAttribute($type);

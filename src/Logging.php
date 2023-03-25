@@ -1,10 +1,10 @@
 <?php
 
-namespace Dotburo\LogMetrics;
+namespace Dotburo\Molog;
 
-use Dotburo\LogMetrics\Factories\MessageFactory;
-use Dotburo\LogMetrics\Factories\MetricFactory;
-use Dotburo\LogMetrics\Models\Metric;
+use Dotburo\Molog\Factories\MessageFactory;
+use Dotburo\Molog\Factories\MetricFactory;
+use Dotburo\Molog\Models\Metric;
 
 /**
  * Provides logging.
@@ -26,7 +26,7 @@ trait Logging
      * @param string $level
      * @return MessageFactory
      */
-    public function message(string $body = '', string $level = LogMetricsConstants::DEBUG): MessageFactory
+    public function message(string $body = '', string $level = Constants::DEBUG): MessageFactory
     {
         $factory = $this->messageFactory ?? $this->messageFactory = new MessageFactory();
 
@@ -45,7 +45,7 @@ trait Logging
      * @param string $type
      * @return MetricFactory
      */
-    public function metric(string $key = '', $value = 0, string $type = LogMetricsConstants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
+    public function metric(string $key = '', $value = 0, string $type = Constants::DEFAULT_METRIC_TYPE, string $unit = ''): MetricFactory
     {
         $factory = $this->metricFactory ?? $this->metricFactory = new MetricFactory();
 

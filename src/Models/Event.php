@@ -1,6 +1,6 @@
 <?php
 
-namespace Dotburo\LogMetrics\Models;
+namespace Dotburo\Molog\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;

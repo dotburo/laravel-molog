@@ -1,8 +1,8 @@
 <?php
 
-namespace Dotburo\LogMetrics\Models;
+namespace Dotburo\Molog\Models;
 
-use Dotburo\LogMetrics\LogMetricsConstants;
+use Dotburo\Molog\Constants;
 
 /**
  * Model for logged metrics.
@@ -30,7 +30,7 @@ class Metric extends Event
 
     public function setTypeAttribute(?string $type): Metric
     {
-        $this->attributes['type'] = ! empty($type) ? strtolower($type) : LogMetricsConstants::DEFAULT_METRIC_TYPE;
+        $this->attributes['type'] = ! empty($type) ? strtolower($type) : Constants::DEFAULT_METRIC_TYPE;
 
         return $this;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Dotburo\LogMetrics;
+namespace Dotburo\Molog;
 
 use Psr\Log\LogLevel;
 
@@ -10,7 +10,7 @@ use Psr\Log\LogLevel;
  * @copyright 2021 dotburo
  * @author dotburo <code@dotburo.org>
  */
-final class LogMetricsConstants extends LogLevel
+final class Constants extends LogLevel
 {
     /** @var int[] */
     public const LEVEL_CODES = [

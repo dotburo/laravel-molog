@@ -1,11 +1,11 @@
 <?php
 
-namespace Dotburo\LogMetrics\Factories;
+namespace Dotburo\Molog\Factories;
 
-use Dotburo\LogMetrics\Exceptions\EventFactoryException;
-use Dotburo\LogMetrics\Models\Event;
-use Dotburo\LogMetrics\Models\Message;
-use Dotburo\LogMetrics\Models\Metric;
+use Dotburo\Molog\Exceptions\EventFactoryException;
+use Dotburo\Molog\Models\Event;
+use Dotburo\Molog\Models\Message;
+use Dotburo\Molog\Models\Metric;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Stringable;

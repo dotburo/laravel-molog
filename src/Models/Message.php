@@ -1,8 +1,8 @@
 <?php
 
-namespace Dotburo\LogMetrics\Models;
+namespace Dotburo\Molog\Models;
 
-use Dotburo\LogMetrics\LogMetricsConstants;
+use Dotburo\Molog\Constants;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
@@ -50,11 +50,11 @@ class Message extends Event
 
         $levels = array_intersect(
             array_map('trim', $levels),
-            array_keys(LogMetricsConstants::LEVEL_CODES)
+            array_keys(Constants::LEVEL_CODES)
         );
 
         $codes = array_map(function($level) {
-            return LogMetricsConstants::LEVEL_CODES[$level] ?? LogMetricsConstants::LEVEL_CODES[LogMetricsConstants::DEBUG];
+            return Constants::LEVEL_CODES[$level] ?? Constants::LEVEL_CODES[Constants::DEBUG];
         }, $levels);
 
         return count($levels) > 1 ? $codes : reset($codes);
@@ -68,9 +68,9 @@ class Message extends Event
      */
     public static function levelLabel(int $level): string
     {
-        $levels = array_flip(LogMetricsConstants::LEVEL_CODES);
+        $levels = array_flip(Constants::LEVEL_CODES);
 
-        return $levels[$level] ?? LogMetricsConstants::DEBUG;
+        return $levels[$level] ?? Constants::DEBUG;
     }
 
     /**
