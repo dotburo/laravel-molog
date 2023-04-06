@@ -3,7 +3,6 @@
 namespace Dotburo\Molog\Traits;
 
 use Dotburo\Molog\MologConstants;
-use Dotburo\Molog\Models\Message;
 
 /**
  * PSR compliant methods.

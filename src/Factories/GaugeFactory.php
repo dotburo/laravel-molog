@@ -2,8 +2,8 @@
 
 namespace Dotburo\Molog\Factories;
 
-use Dotburo\Molog\MologConstants;
 use Dotburo\Molog\Models\Gauge;
+use Dotburo\Molog\MologConstants;
 use Illuminate\Support\Collection;
 
 /**

@@ -3,8 +3,8 @@
 namespace Dotburo\Molog\Commands;
 
 use Carbon\Carbon;
-use Dotburo\Molog\Models\Message;
 use Dotburo\Molog\Models\Gauge;
+use Dotburo\Molog\Models\Message;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 

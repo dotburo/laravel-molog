@@ -20,7 +20,7 @@ class MessageFactory extends EventFactory implements LoggerInterface
      * Implements default PSR logging method.
      * {@inheritdoc}
      */
-    public function log($level, $subject, array $context = array()): MessageFactory
+    public function log($level, $subject, array $context = []): MessageFactory
     {
         $message = $subject instanceof Message
             ? $subject
@@ -43,7 +43,7 @@ class MessageFactory extends EventFactory implements LoggerInterface
      * @param array $context
      * @return $this
      */
-    public function message($level, $subject, array $context = array()): MessageFactory
+    public function message($level, $subject, array $context = []): MessageFactory
     {
         return $this->log($level, $subject, $context);
     }

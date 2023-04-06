@@ -1,7 +1,7 @@
 <?php
 
-use Dotburo\Molog\MologConstants;
 use Dotburo\Molog\Models\Message;
+use Dotburo\Molog\MologConstants;
 use Dotburo\Molog\Tests\Logs;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

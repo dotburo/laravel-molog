@@ -1,8 +1,8 @@
 <?php
 
 use Dotburo\Molog\Factories\MessageFactory;
-use Dotburo\Molog\MologConstants;
 use Dotburo\Molog\Models\Message;
+use Dotburo\Molog\MologConstants;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -12,7 +12,7 @@ it('can create, add and update messages', function () {
     $msgFactory->setTenant(5);
     $msgFactory->setContext('testing');
     $msgFactory->message('Test process started', MologConstants::NOTICE);
-    $msgFactory->log( MologConstants::NOTICE, 'Test process started');
+    $msgFactory->log(MologConstants::NOTICE, 'Test process started');
     $msgFactory->last()->notice('Test process continued');
 
     expect($msgFactory->count())->toBe(2);

@@ -2,12 +2,12 @@
 
 namespace Dotburo\Molog\Traits;
 
-use Dotburo\Molog\MologConstants;
-use Dotburo\Molog\Factories\MessageFactory;
 use Dotburo\Molog\Factories\GaugeFactory;
+use Dotburo\Molog\Factories\MessageFactory;
 use Dotburo\Molog\Models\Event;
 use Dotburo\Molog\Models\Gauge;
 use Dotburo\Molog\Models\Message;
+use Dotburo\Molog\MologConstants;
 use Ramsey\Collection\Collection;
 
 /**

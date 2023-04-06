@@ -93,7 +93,7 @@ class Logs
 
         $resultsCount = $results->count();
 
-        if (!$resultsCount) {
+        if (! $resultsCount) {
             $this->message()->warning('No results');
 
             $this->messageFactory()->save();

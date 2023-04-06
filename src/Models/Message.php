@@ -39,7 +39,7 @@ class Message extends Event implements LoggerInterface
         parent::boot();
 
         static::saving(function (Message $message) {
-            if (!$message->subject) {
+            if (! $message->subject) {
                 throw new MologException('A message without subject cannot be savec');
             }
         });
@@ -90,7 +90,7 @@ class Message extends Event implements LoggerInterface
             array_keys(MologConstants::LEVEL_CODES)
         );
 
-        $codes = array_map(function($level) {
+        $codes = array_map(function ($level) {
             return MologConstants::LEVEL_CODES[$level] ?? MologConstants::LEVEL_CODES[MologConstants::DEBUG];
         }, $levels);
 
