@@ -17,6 +17,6 @@ it('can create, add and update messages', function () {
 
     expect($saved->level)->toBe(MologConstants::ERROR);
     expect($saved->loggable_type)->toBe('Illuminate\Foundation\Auth\User');
-    expect($saved->loggable_id)->toBe('4');
+    expect((int)$saved->loggable_id)->toBe(4);
     expect($saved->context)->toBe('mailing');
 });
