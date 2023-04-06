@@ -25,7 +25,7 @@ class MologServiceProvider extends ServiceProvider
         }
     }
 
-    /** @inheritDoc */
+    /** @inheritdoc */
     public function register()
     {
         $this->mergeConfigFrom(realpath(__DIR__ . '/../config/molog.php'), 'molog');

@@ -16,10 +16,10 @@ use Illuminate\Support\Str;
  */
 class DatabaseCleanup extends Command
 {
-    /** @inheritDoc */
+    /** @inheritdoc */
     protected $signature = 'molog:db:cleanup {datetime : Parsable datetime format}';
 
-    /** @inheritDoc */
+    /** @inheritdoc */
     protected $description = 'Delete records older than the given time';
 
     /**

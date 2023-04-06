@@ -17,12 +17,12 @@ use Dotburo\Molog\MologConstants;
  */
 class Gauge extends Event
 {
-    /** @inheritDoc  */
+    /** @inheritdoc  */
     protected $fillable = [
         'key', 'value', 'unit', 'type',
     ];
 
-    /** @inheritDoc */
+    /** @inheritdoc */
     protected $casts = [
         'value' => 'float',
         'created_at' => 'datetime',

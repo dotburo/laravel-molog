@@ -22,12 +22,12 @@ class Message extends Event implements LoggerInterface
 {
     use PsrLoggerMethods;
 
-    /** @inheritDoc  */
+    /** @inheritdoc  */
     protected $fillable = [
         'level', 'subject', 'body',
     ];
 
-    /** @inheritDoc */
+    /** @inheritdoc */
     protected $casts = [
         'level' => 'int',
         'created_at' => 'datetime',

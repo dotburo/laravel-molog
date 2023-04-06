@@ -22,16 +22,16 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Event extends Model implements EventInterface
 {
-    /** @inheritDoc */
+    /** @inheritdoc */
     public const UPDATED_AT = null;
 
-    /** @inheritDoc */
+    /** @inheritdoc */
     protected $dateFormat = MologConstants::CREATED_AT_FORMAT;
 
-    /** @inheritDoc */
+    /** @inheritdoc */
     protected $guarded = ['id', 'created_at'];
 
-    /** @inheritDoc */
+    /** @inheritdoc */
     protected $hidden = ['id'];
 
     /**
@@ -45,7 +45,7 @@ class Event extends Model implements EventInterface
 
     /**
      * Override the constructor to give the model an early timestamp.
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function __construct(array $attributes = [])
     {
@@ -56,7 +56,7 @@ class Event extends Model implements EventInterface
 
     /**
      * Save the time with millisecond precision.
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setCreatedAt($value)
     {
