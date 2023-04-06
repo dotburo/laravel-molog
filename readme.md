@@ -1,4 +1,4 @@
-# Laravel Molog
+# Molog for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/dotburo/laravel-molog.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-molog)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/dotburo/laravel-molog/run-tests?label=tests)](https://github.com/dotburo/laravel-molog/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -66,44 +66,11 @@ class YourClass {
 }
 ```
 
-## Factory instantiation examples
-
-```php
-use Dotburo\Molog\Factories\MessageFactory;
-use Dotburo\Molog\Factories\GaugeFactory;
-use Illuminate\Database\Eloquent\Model;
-use Psr\Log\LogLevel;
-
-$model = Model::first();
-
-$messageFactory = new MessageFactory();
-$messageFactory->setTenant(7);
-$messageFactory->message('Import process completed', LogLevel::NOTICE);
-$messageFactory->setTenant(5);
-$messageFactory->concerning($model);
-$messageFactory->setContext('Import process');
-$messageFactory->message('Bad air quality', LogLevel::WARNING);
-$messageFactory->save();
-
-$gaugeFactory = new GaugeFactory();
-$gaugeFactory->concerning($messageFactory->last());
-$gaugeFactory->setContext('Import process');
-$gaugeFactory->gauge('pressure', 2.35, 'bar', 'int');
-$gaugeFactory->gauge('density', 5.43);
-$gaugeFactory->last()->value = 5.45;
-$gaugeFactory->save();
-
-```
-
 ## Testing
 
 ```bash
 composer test
 ```
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
 ## Contributing
 
