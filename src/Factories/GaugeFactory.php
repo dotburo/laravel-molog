@@ -2,7 +2,7 @@
 
 namespace Dotburo\Molog\Factories;
 
-use Dotburo\Molog\Constants;
+use Dotburo\Molog\MologConstants;
 use Dotburo\Molog\Models\Gauge;
 use Illuminate\Support\Collection;
 
@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
  */
 class GaugeFactory extends EventFactory
 {
-    public function add($key, $value = 0, string $type = Constants::DEFAULT_METRIC_TYPE, string $unit = ''): GaugeFactory
+    public function gauge($key, $value = 0, string $type = MologConstants::DEFAULT_GAUGE_TYPE, string $unit = ''): GaugeFactory
     {
         $gauge = $key instanceof Gauge
             ? $key
@@ -27,19 +27,20 @@ class GaugeFactory extends EventFactory
 
         $gauge = $this->setGlobalProperties($gauge);
 
-        $uuid = $gauge->getKey();
-
-        $this->items->offsetSet($uuid, $gauge);
-
-        $this->setLastUuid($uuid);
+        $this->items->push($gauge);
 
         return $this;
     }
 
-    public function addMany(array $items): GaugeFactory
+    /**
+     * Create multiple gauges at once.
+     * @param array $items
+     * @return $this
+     */
+    public function gauges(array $items): GaugeFactory
     {
         foreach ($items as $gauge) {
-            $this->add($gauge['key'], $gauge['value'], $gauge['type'] ?? '', $gauge['unit'] ?? '');
+            $this->gauge($gauge['key'], $gauge['value'], $gauge['type'] ?? '', $gauge['unit'] ?? '');
         }
 
         return $this;
@@ -53,18 +54,16 @@ class GaugeFactory extends EventFactory
      * @param string $unit
      * @return $this
      */
-    public function increment(string $key, $value = 1, string $type = Constants::DEFAULT_METRIC_TYPE, string $unit = ''): GaugeFactory
+    public function increment(string $key, $value = 1, string $type = MologConstants::DEFAULT_GAUGE_TYPE, string $unit = ''): GaugeFactory
     {
         /** @var Gauge $gauge */
         if ($gauge = $this->getGaugesByKey($key)->first()) {
             $gauge->setValueAttribute($gauge->value + $value);
 
-            $this->setLastUuid($gauge->getKey());
-
             return $this;
         }
 
-        return $this->add($key, $value, $type, $unit);
+        return $this->gauge($key, $value, $type, $unit);
     }
 
     /**
@@ -75,29 +74,26 @@ class GaugeFactory extends EventFactory
      * @param string $unit
      * @return $this
      */
-    public function decrement(string $key, $value = 1, string $type = Constants::DEFAULT_METRIC_TYPE, string $unit = ''): GaugeFactory
+    public function decrement(string $key, $value = 1, string $type = MologConstants::DEFAULT_GAUGE_TYPE, string $unit = ''): GaugeFactory
     {
         /** @var Gauge $gauge */
         if ($gauge = $this->getGaugesByKey($key)->first()) {
             $gauge->setValueAttribute($gauge->value - $value);
 
-            $this->setLastUuid($gauge->getKey());
-
             return $this;
         }
 
-        return $this->add($key, $value, $type, $unit);
+        return $this->gauge($key, $value, $type, $unit);
     }
 
     /**
      * @param string $key
-     * @param bool $contextRelative
      * @return Collection
      */
-    protected function getGaugesByKey(string $key, bool $contextRelative = true): Collection
+    protected function getGaugesByKey(string $key): Collection
     {
-        return $this->items->filter(function (Gauge $gauge) use ($key, $contextRelative) {
-            return $gauge->key === $key && (! $contextRelative || $gauge->context === $this->context);
+        return $this->items->filter(function (Gauge $gauge) use ($key) {
+            return $gauge->key === $key;
         });
     }
 
@@ -108,7 +104,7 @@ class GaugeFactory extends EventFactory
      */
     public function startTimer(string $key = 'duration'): GaugeFactory
     {
-        return $this->add($key, microtime(true), 'float', 's');
+        return $this->gauge($key, microtime(true), 'float', 's');
     }
 
     /**
@@ -124,53 +120,6 @@ class GaugeFactory extends EventFactory
 
         $gauge->setValueAttribute(microtime(true) - $gauge->value);
 
-        $this->setLastUuid($gauge->getKey());
-
         return $this;
-    }
-
-    public function setType(string $type = Constants::DEFAULT_METRIC_TYPE): GaugeFactory
-    {
-        if ($event = $this->previous()) {
-            $event->setTypeAttribute($type);
-        }
-
-        return $this;
-    }
-
-    public function setUnit(string $unit): GaugeFactory
-    {
-        if ($event = $this->previous()) {
-            $event->setUnitAttribute($unit);
-        }
-
-        return $this;
-    }
-
-    public function setKey(string $key): GaugeFactory
-    {
-        if ($event = $this->previous()) {
-            $event->setKeyAttribute($key);
-        }
-
-        return $this;
-    }
-
-    public function setValue($value): GaugeFactory
-    {
-        if ($event = $this->previous()) {
-            $event->setValueAttribute($value);
-        }
-
-        return $this;
-    }
-
-    public function __toString(): string
-    {
-        return $this->items->map(function (Gauge $gauge) {
-            $context = $gauge->context ? "$gauge->context: " : '';
-
-            return trim("→ {$context}$gauge->key: $gauge->value $gauge->unit");
-        })->reverse()->join(PHP_EOL);
     }
 }

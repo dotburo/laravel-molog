@@ -2,9 +2,12 @@
 
 namespace Dotburo\Molog\Tests;
 
-use Dotburo\Molog\Logging;
-use Dotburo\Molog\Constants;
+use Dotburo\Molog\Models\Message;
+use Dotburo\Molog\Traits\Logging;
 use Exception;
+use Illuminate\Foundation\Auth\User;
+use Psr\Log\LogLevel;
+use Throwable;
 
 class Logs
 {
@@ -12,45 +15,132 @@ class Logs
 
     public function handle()
     {
-        $message = $this->message()
-            ->notice('Sent')
-            ->setContext('App\Mail\Mailable')
-            ->setRelation(4, 'App\Models\User')
-            ->last();
+        $user = new User();
 
-        $message->setLevelAttribute(Constants::ERROR)
-            ->setBodyAttribute(new Exception('Sending error'));
+        $user->id = 4;
 
-        $this->message()->save();
+        /** @var Message $message */
+        $message = $this->message('Preparing to send message...', LogLevel::DEBUG);
 
-        return $this->message();
+        $message->concerning($user)
+            ->setLevel(LogLevel::CRITICAL)
+            ->setBody(new Exception('Sending error'))
+            ->setContext('mailing')
+            ->setTenant($user)
+            ->setUser($user);
+
+        $message->level = LogLevel::ERROR;
+        $message->body = '';
+        $message->tenant_id = 30;
+        $message->user_id = 20;
+
+        $message->save();
+
+        return $message;
     }
 
-    /*
-    public function handle()
+    public function useCaseOne()
     {
-        $message = $this->message()
-            ->notice('Sent')
-            ->setContext('')
-            ->setRelation(4, 'App\Models\User');
-            //->save();
-            //->last();
+        $message = $this->message('Function called, process started...')->setContext('uco-context');
 
-        $this->getMessageFactory()
-            ->setContext() // set for all next
-            ->setRelation() // set for all next
-            ->save(); // saves all TODO: required to call if multiple messages
+        try {
+            $results = [];
+        } catch (Exception $exception) {
+            $message->setLevel(LogLevel::ERROR)->setBody($exception)->save();
 
-        $message->setLevelAttribute(Constants::ERROR)
-            ->setBodyAttribute(new Exception('Sending error'));
+            return false;
+        }
 
-        $message->setLevelAttribute();
-        $message->setLevel();
-        $message->level = '';
+        if (empty($results)) {
+            $message->warning('Process started, but did not yield results')->save();
 
+            return false;
+        }
 
-        $this->message()->save();
+        $message->save();
 
-        return $this->message();
-    } */
+        $this->gaugeFactory()
+            ->concerning($message)
+            ->gauge('Result count', 25)
+            ->gauge('Results accepted', 23)
+            ->gauge('Results refused', 2)
+            ->save();
+
+        return true;
+    }
+
+    public function useCaseTwo()
+    {
+        $this->messageFactory()->setContext('UseCaseTwo');
+
+        if (empty($something)) {
+            $this->message()->error('Something\'s wrong, process aborted')->save();
+
+            return 0;
+        }
+
+        $this->message()->debug('Starting process...');
+
+        try {
+            $results = collect();
+        } catch (Throwable $e) {
+            $this->message()->error('Process failed: ' . $e->getMessage());
+
+            $this->messageFactory()->save();
+
+            throw new Exception($e->getMessage(), $e->getCode(), $e);
+        }
+
+        $resultsCount = $results->count();
+
+        if (!$resultsCount) {
+            $this->message()->warning('No results');
+
+            $this->messageFactory()->save();
+
+            return 0;
+        }
+
+        $expectedCount = 10;
+
+        $storedCount = 9;
+
+        $message = $storedCount < $expectedCount
+            ? $this->message()->warning("Some results were not imported")
+            : $this->message()->info("All results imported");
+
+        $message->save();
+
+        $this->gaugeFactory()
+            ->concerning($message)
+            ->gauge('Results expected', $expectedCount)
+            ->gauge('Results downloaded', $resultsCount)
+            ->gauge('Results stored', $storedCount)
+            ->save();
+
+        return $storedCount;
+    }
+
+    public function useCaseThree()
+    {
+        $this->message()->log(LogLevel::NOTICE, 'Something is happening...')->save();
+
+        $this->messageFactory()
+            ->log(LogLevel::NOTICE, 'Something is happening...')
+            ->log(LogLevel::NOTICE, 'Something is happening...')
+            ->log(LogLevel::NOTICE, 'Something is happening...')
+            ->save();
+
+        $this->messageFactory()
+            ->message(LogLevel::NOTICE, 'Something is happening...')
+            ->message(LogLevel::NOTICE, 'Something is happening...')
+            ->message(LogLevel::NOTICE, 'Something is happening...')
+            ->save();
+
+        $this->gaugeFactory()
+            ->gauge('Result', 1)
+            ->gauge('Result', 2)
+            ->gauge('Result', 3)
+            ->save();
+    }
 }

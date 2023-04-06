@@ -10,7 +10,7 @@ use Psr\Log\LogLevel;
  * @copyright 2021 dotburo
  * @author dotburo <code@dotburo.org>
  */
-final class Constants extends LogLevel
+final class MologConstants extends LogLevel
 {
     /** @var int[] */
     public const LEVEL_CODES = [
@@ -25,5 +25,11 @@ final class Constants extends LogLevel
     ];
 
     /** @var string */
-    public const DEFAULT_METRIC_TYPE = 'float';
+    public const DEFAULT_GAUGE_TYPE = 'float';
+
+    /** @var int */
+    public const DEFAULT_GAUGE_ROUNDING = -1;
+
+    /** @var string */
+    public const CREATED_AT_FORMAT = 'Y-m-d H:i:s.u';
 }

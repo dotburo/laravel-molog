@@ -2,7 +2,8 @@
 
 namespace Dotburo\Molog\Factories;
 
-use Dotburo\Molog\Exceptions\EventFactoryException;
+use Dotburo\Molog\EventInterface;
+use Dotburo\Molog\Exceptions\MologException;
 use Dotburo\Molog\Models\Event;
 use Dotburo\Molog\Models\Message;
 use Dotburo\Molog\Models\Gauge;
@@ -13,45 +14,41 @@ use Stringable;
 /**
  * Class EventFactory.
  *
- * @method Event last()
- * @method Event where()
- * @
- *
  * @copyright 2021 dotburo
  * @author dotburo <code@dotburo.org>
  */
-abstract class EventFactory implements Stringable
+class EventFactory implements EventInterface, Stringable
 {
     /** @var Collection */
     protected Collection $items;
 
-    /** @var string */
-    protected string $lastUuid;
-
     /** @var string|null */
     protected ?string $context = null;
 
-    /** @var int|string|null */
-    protected $relationId = null;
-
-    /** @var string|null */
-    protected ?string $relationName = null;
+    /** @var Model|null */
+    protected ?Model $relation = null;
 
     /** @var int|null */
-    protected ?int $tenantId = null;
+    protected ?int $user_id = null;
 
-    /**
-     * Cast all events to a multiline string.
-     * @return string
-     */
-    abstract public function __toString(): string;
+    /** @var int|null */
+    protected ?int $tenant_id = null;
 
     /**
      * EventFactory constructor.
      */
     public function __construct()
     {
-        $this->items = new Collection();
+        $this->reset();
+    }
+
+    /**
+     * Return the last created event.
+     * @return Event|Gauge|Message|null
+     */
+    public function last(): ?Event
+    {
+        return $this->items->last();
     }
 
     /**
@@ -60,160 +57,55 @@ abstract class EventFactory implements Stringable
      */
     protected function setGlobalProperties(Event $event): Event
     {
-        if ($this->context) {
-            $event->setContextAttribute($this->context);
+        foreach (['context', 'user_id', 'tenant_id'] as $property) {
+            if (isset($this->$property)) {
+                $event->$property = $this->$property;
+            }
         }
 
-        if ($this->tenantId) {
-            $event->setTenantIdAttribute($this->tenantId);
-        }
-
-        if ($this->relationId) {
-            $event->setLoggableIdAttribute($this->relationId);
-            $event->setLoggableTypeAttribute($this->relationName ?: '');
+        if ($this->relation) {
+            $event->concerning($this->relation);
         }
 
         return $event;
     }
 
-    /**
-     * Keep track of the last created or updated event.
-     * @param string $uuid
-     * @return void
-     */
-    protected function setLastUuid(string $uuid): void
+    /** @inheritdoc */
+    public function concerning(?Model $model = null): self
     {
-        $this->lastUuid = $uuid;
-    }
-
-    /**
-     * Return the last created or updated event.
-     * @return string
-     */
-    public function previousUuid(): string
-    {
-        return $this->lastUuid;
-    }
-
-    /**
-     * Return the last created or updated event.
-     * @return Event|Gauge|Message|null
-     */
-    public function previous(): ?Event
-    {
-        return ! empty($this->lastUuid) ? $this->items->get($this->lastUuid) : null;
-    }
-
-    /**
-     * Set the relation properties on the last event.
-     * @param Model|int|string $id
-     * @param string $name
-     * @return $this
-     */
-    public function setRelation($id, string $name = ''): EventFactory
-    {
-        $event = $this->previous();
-
-        list($id, $name) = $this->resolveRelation($id, $name);
-
-        if ($event) {
-            $event->setLoggableIdAttribute($id);
-            $event->setLoggableTypeAttribute($name);
-        }
+        $this->relation = $model;
 
         return $this;
     }
 
-    /**
-     * Assign the global relation properties.
-     * @param Model|int|string $id
-     * @param string $name
-     * @return EventFactory
-     */
-    public function setRelationGlobally($id = 0, string $name = ''): EventFactory
-    {
-        if (! $id) {
-            $this->relationId = $this->relationName = null;
-
-            return $this;
-        }
-
-        list($id, $name) = $this->resolveRelation($id, $name);
-
-        $this->relationId = $id;
-
-        $this->relationName = $name;
-
-        return $this;
-    }
-
-    /**
-     * Extract the relation reference from the given parameters.
-     * @param Model|int|string $id
-     * @param string $name
-     * @return array
-     */
-    protected function resolveRelation($id, string $name = ''): array
-    {
-        $modelInstance = $id instanceof Model;
-
-        $relationId = $modelInstance ? $id->getKey() : $id;
-
-        $relationName = ! $name && $modelInstance ? get_class($id) : $name;
-
-        return [$relationId, $relationName];
-    }
-
-    /**
-     * Set the context property on the last event.
-     * @param object|string $label
-     * @return $this
-     */
-    public function setContext($label): EventFactory
-    {
-        $label = is_object($label) ? get_class($label) : $label;
-
-        if ($event = $this->previous()) {
-            $event->setContextAttribute($label);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Assign the global context property.
-     * @param string $label
-     * @return EventFactory
-     */
-    public function setContextGlobally(string $label = ''): EventFactory
+    /** @inheritdoc */
+    public function setContext(string $label = ''): self
     {
         $this->context = $label ?: null;
 
         return $this;
     }
 
-    /**
-     * Set the tenant property on the last event.
-     * @param int $id
-     * @return $this
-     */
-    public function setTenant(int $id): EventFactory
+    /** @inheritdoc */
+    public function setTenant($tenant = 0): self
     {
-        if ($event = $this->previous()) {
-            $event->setTenantIdAttribute($id);
+        if ($tenant && $tenant instanceof Model) {
+            $tenant = $tenant->getKey();
         }
+
+        $this->tenant_id = $tenant ?: null;
 
         return $this;
     }
 
-    /**
-     * Assign the global tenant property.
-     * @param int $id
-     * @return EventFactory
-     */
-    public function setTenantGlobally(int $id = 0): EventFactory
+    /** @inheritdoc */
+    public function setUser($user = 0): self
     {
-        $this->tenantId = $id ?: null;
+        if ($user && $user instanceof Model) {
+            $user = $user->getKey();
+        }
+
+        $this->user_id = $user ?: null;
 
         return $this;
     }
@@ -223,12 +115,12 @@ abstract class EventFactory implements Stringable
      * @param string $name
      * @param array $arguments
      * @return mixed
-     * @throws EventFactoryException
+     * @throws MologException
      */
     public function __call(string $name, array $arguments)
     {
         if (! method_exists($this->items, $name)) {
-            throw new EventFactoryException("The method '$name' is not implemented.");
+            throw new MologException("Method '$name' is not implemented in " . static::class);
         }
 
         return $this->items->$name(...$arguments);
@@ -254,5 +146,16 @@ abstract class EventFactory implements Stringable
         $this->items = new Collection();
 
         return $this;
+    }
+
+    /**
+     * Return the print-out in reversed order.
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->items->reverse()->map(function (Event $event) {
+            return (string)$event;
+        })->join(PHP_EOL);
     }
 }

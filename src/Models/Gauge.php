@@ -2,7 +2,7 @@
 
 namespace Dotburo\Molog\Models;
 
-use Dotburo\Molog\Constants;
+use Dotburo\Molog\MologConstants;
 
 /**
  * Model for logged gauges.
@@ -30,7 +30,7 @@ class Gauge extends Event
 
     public function setTypeAttribute(?string $type): Gauge
     {
-        $this->attributes['type'] = ! empty($type) ? strtolower($type) : Constants::DEFAULT_METRIC_TYPE;
+        $this->attributes['type'] = ! empty($type) ? strtolower($type) : MologConstants::DEFAULT_GAUGE_TYPE;
 
         return $this;
     }
@@ -62,6 +62,23 @@ class Gauge extends Event
 
         settype($value, $this->attributes['type']);
 
+        $round = (int)config('molog.gauge_float_round', MologConstants::DEFAULT_GAUGE_ROUNDING);
+
+        if ($round > -1) {
+            return round($value, $round);
+        }
+
         return $value;
+    }
+
+    /**
+     * Override Laravel's method to construct a standard log line.
+     * @return string
+     */
+    public function __toString(): string
+    {
+        $context = $this->context ? "[$this->context] " : '';
+
+        return "{$context}$this->key: $this->value{$this->unit}";
     }
 }

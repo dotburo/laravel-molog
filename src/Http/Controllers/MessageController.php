@@ -2,7 +2,6 @@
 
 namespace Dotburo\Molog\Http\Controllers;
 
-use Dotburo\Molog\Constants;
 use Dotburo\Molog\Models\Message;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Http\Request;

@@ -5,8 +5,6 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/dotburo/laravel-molog/Check%20&%20fix%20styling?label=code%20style)](https://github.com/dotburo/laravel-molog/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/dotburo/laravel-molog.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-molog)
 
-**In development!** Simple Laravel tool to log messages and metrics to a database.
-
 ## Installation
 
 You can install the package via composer:
@@ -26,7 +24,7 @@ php artisan migrate
 
 ```php
 use Dotburo\Molog\Models\Gauge;
-use Dotburo\Molog\Logging;
+use Dotburo\Molog\Traits\Logging;
 use Psr\Log\LogLevel;
 
 class YourClass {
@@ -34,15 +32,18 @@ class YourClass {
     
     protected function yourMethod()
     {
-        // Message examples
+        // Message logging examples
         
-        $this->message('Import process initiated', LogLevel::INFO)
+        // This will store three messages
+        $this->messageFactory()
+            ->message(LogLevel::INFO, 'Import process initiated')
             ->notice('Import process ongoing')
             ->warn('Import process aborted')
             ->save();
         
+       // This will log one message with the subject 'aborted' and level critical
        $this->message()
-            ->setContextGlobally('Import process')
+            ->setContext('Import process')
             ->notice('ongoing')
             ->warn('aborted')
             ->setLevel(LogLevel::CRITICAL)
@@ -50,7 +51,9 @@ class YourClass {
         
         // Gauge examples
         
-        $this->gauge('density', 5)->save();
+        $this->gaugeFactory()->concerning($this->messageFactory()->last());
+        
+        $this->gauge('density', 5)->concerning($this->messageFactory()->first())->save();
         
         $this->gauges([
             ['key' => 'density', 'value' => 5.3567],
@@ -58,10 +61,7 @@ class YourClass {
             new Gauge(['key' => 'quality', 'value' => 3])
         ]);
         
-        $this->gauges()
-            ->setTenant(5)
-            ->setRelation($this->message()->previous())
-            ->save();
+        $this->gaugeFactory()->save();
     }
 }
 ```
@@ -71,28 +71,27 @@ class YourClass {
 ```php
 use Dotburo\Molog\Factories\MessageFactory;
 use Dotburo\Molog\Factories\GaugeFactory;
+use Illuminate\Database\Eloquent\Model;
 use Psr\Log\LogLevel;
 
+$model = Model::first();
+
 $messageFactory = new MessageFactory();
-$messageFactory->setTenantGlobally(7);
-$messageFactory->add('Import process completed', LogLevel::NOTICE);
-$messageFactory->add('Bad air quality', LogLevel::WARNING);
+$messageFactory->setTenant(7);
+$messageFactory->message('Import process completed', LogLevel::NOTICE);
 $messageFactory->setTenant(5);
-$messageFactory->setRelation($yourModel);
+$messageFactory->concerning($model);
 $messageFactory->setContext('Import process');
-#$messageFactory->setLevel('key', LogLevel::ERROR);
-#$messageFactory->setBody('key', 'Air quality import process completed');
+$messageFactory->message('Bad air quality', LogLevel::WARNING);
 $messageFactory->save();
-$messageFactory->reset();
 
 $gaugeFactory = new GaugeFactory();
-$gaugeFactory->setRelationGlobally($messageFactory->previous());
-$gaugeFactory->add('pressure', 2.35, 'bar', 'int');
-$gaugeFactory->add('density', 5.43);
+$gaugeFactory->concerning($messageFactory->last());
 $gaugeFactory->setContext('Import process');
-$gaugeFactory->previous()->value = 5.45;
+$gaugeFactory->gauge('pressure', 2.35, 'bar', 'int');
+$gaugeFactory->gauge('density', 5.43);
+$gaugeFactory->last()->value = 5.45;
 $gaugeFactory->save();
-$gaugeFactory->reset();
 
 ```
 

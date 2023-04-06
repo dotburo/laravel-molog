@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Dotburo\Molog\Models\Message;
 use Dotburo\Molog\Models\Gauge;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 /**
  * Generic command to delete database rows older than a given time.
@@ -22,10 +23,10 @@ class DatabaseCleanup extends Command
     protected $description = 'Delete records older than the given time';
 
     /**
-     * @todo Improve performance ?
-     * @return void
+     * Delete the old records.
+     * @return int
      */
-    public function handle(): void
+    public function handle(): int
     {
         $time = Carbon::parse($this->argument('datetime'));
 
@@ -39,14 +40,16 @@ class DatabaseCleanup extends Command
             $message->gauges()->delete();
         });
 
-        Message::query()
+        $count = Message::query()
             ->where('created_at', '<=', $time)
             ->delete();
 
-        Gauge::query()
+        $count += Gauge::query()
             ->where('created_at', '<=', $time)
             ->delete();
 
-        $this->info('Done!');
+        $this->info($count . ' ' . Str::plural('row') . ' deleted.');
+
+        return 0;
     }
 }

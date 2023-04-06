@@ -3,36 +3,30 @@
 namespace Dotburo\Molog\Models;
 
 use Carbon\Carbon;
+use Dotburo\Molog\EventInterface;
+use Dotburo\Molog\MologConstants;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Str;
 
 /**
  * Base model for logged messages and gauges.
  *
- * @property int $id
+ * @property int|string $id
+ * @property int $user_id
  * @property int $tenant_id
- * @property int $loggable_id
- * @property string $loggable_type
  * @property string $context
  * @property Carbon $created_at
  *
  * @copyright 2021 dotburo
  * @author dotburo <code@dotburo.org>
  */
-class Event extends Model
+class Event extends Model implements EventInterface
 {
     /** @inheritDoc */
     public const UPDATED_AT = null;
 
     /** @inheritDoc */
-    public $incrementing = false;
-
-    /** @inheritDoc */
-    protected $keyType = 'uuid';
-
-    /** @inheritDoc */
-    protected $dateFormat = 'Y-m-d H:i:s.u';
+    protected $dateFormat = MologConstants::CREATED_AT_FORMAT;
 
     /** @inheritDoc */
     protected $guarded = ['id', 'created_at'];
@@ -50,20 +44,14 @@ class Event extends Model
     }
 
     /**
-     * Override the constructor to give the model a timestamp and an UUID as primary key if it isn't assigned yet.
+     * Override the constructor to give the model an early timestamp.
      * {@inheritDoc}
      */
     public function __construct(array $attributes = [])
     {
+        $this->updateTimestamps();
+
         parent::__construct($attributes);
-
-        $keyName = $this->getKeyName();
-
-        if (! $this->getAttribute($keyName)) {
-            $this->setAttribute($keyName, Str::uuid()->toString());
-
-            $this->updateTimestamps();
-        }
     }
 
     /**
@@ -72,55 +60,77 @@ class Event extends Model
      */
     public function setCreatedAt($value)
     {
-        $this->{$this->getCreatedAtColumn()} = $value->format('Y-m-d H:i:s.u');
+        $this->{$this->getCreatedAtColumn()} = $value->format(MologConstants::CREATED_AT_FORMAT);
 
         return $this;
     }
 
-    /**
-     * Make sure the tenant ID is set as an int or null.
-     * @param int $id
-     * @return Event
-     */
-    public function setTenantIdAttribute(int $id): Event
+    /** @inheritdoc */
+    public function concerning(Model $model): self
     {
-        $this->attributes['tenant_id'] = $id ?: null;
+        $this->loggable()->associate($model);
 
         return $this;
     }
 
+    /** @inheritdoc */
+    public function setContext(string $label = ''): self
+    {
+        return $this->setContextAttribute($label);
+    }
+
     /**
-     * Make sure the context is set as a string or null.
+     * Make sure the context is a non-empty string or null.
      * @param string $label
      * @return Event
      */
-    public function setContextAttribute(string $label): Event
+    protected function setContextAttribute(string $label): Event
     {
         $this->attributes['context'] = $label ?: null;
 
         return $this;
     }
 
+    /** @inheritdoc */
+    public function setTenant($tenant = 0): self
+    {
+        return $this->setTenantIdAttribute($tenant);
+    }
+
     /**
-     * Make sure the relationship ID is set as an int or null.
-     * @param int|string $id Can be integer or UUID.
+     * Make sure the tenant ID is an int or null.
+     * @param int|Model $id
      * @return Event
      */
-    public function setLoggableIdAttribute($id): Event
+    protected function setTenantIdAttribute($id = 0): Event
     {
-        $this->attributes['loggable_id'] = $id ?: null;
+        if ($id && $id instanceof Model) {
+            $id = $id->getKey();
+        }
+
+        $this->attributes['tenant_id'] = $id ?: null;
 
         return $this;
     }
 
+    /** @inheritdoc  */
+    public function setUser($user = 0): self
+    {
+        return $this->setTenantIdAttribute($user);
+    }
+
     /**
-     * Make sure the relationship class name is set as a string or null.
-     * @param string $name
+     * Make sure the user ID is an int or null.
+     * @param int|Model $id
      * @return Event
      */
-    public function setLoggableTypeAttribute(string $name): Event
+    protected function setUserIdAttribute($id = 0): Event
     {
-        $this->attributes['loggable_type'] = $name ?: null;
+        if ($id && $id instanceof Model) {
+            $id = $id->getKey();
+        }
+
+        $this->attributes['user_id'] = $id ?: null;
 
         return $this;
     }

@@ -1,6 +1,6 @@
 <?php
 
-use Dotburo\Molog\Constants;
+use Dotburo\Molog\MologConstants;
 use Dotburo\Molog\Models\Message;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -24,7 +24,7 @@ class CreateMologTables extends Migration
 
             $table->string('context')->nullable()->index();
 
-            $debugLevelCode = Message::levelCode(Constants::DEBUG);
+            $debugLevelCode = Message::levelCode(MologConstants::DEBUG);
 
             $table->unsignedTinyInteger('level')->default($debugLevelCode)->index();
 
