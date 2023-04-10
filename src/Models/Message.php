@@ -30,6 +30,8 @@ class Message extends Event implements LoggerInterface
     /** @inheritdoc */
     protected $casts = [
         'level' => 'int',
+        'user_id' => 'int',
+        'tenant_id' => 'int',
     ];
 
     /** @inheritdoc */

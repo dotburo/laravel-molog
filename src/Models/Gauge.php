@@ -29,6 +29,8 @@ class Gauge extends Event
     /** @inheritdoc */
     protected $casts = [
         'value' => 'float',
+        'user_id' => 'int',
+        'tenant_id' => 'int',
     ];
 
     /**
