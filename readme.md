@@ -1,4 +1,3 @@
-
 # Molog for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/dotburo/laravel-molog.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-molog)
@@ -6,18 +5,26 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/dotburo/laravel-molog/Check%20&%20fix%20styling?label=code%20style)](https://github.com/dotburo/laravel-molog/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/dotburo/laravel-molog.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-molog)
 
+Laravel Molog enables you to log messages and store metrics that are related to specific models. Akin to Spatie's 
+[Activity Log](https://github.com/spatie/laravel-activitylog), but slightly more generic and with the possibility to
+associate metrics (Gauges) to messages or to any other Laravel model.
+
+In its simplest form:
 ```php
 $user = auth()->user();
 
 $this->message()->info('Mail sent!')->concerning($user)->save();
 ```
 
+A slightly more advanced example - a message with metrics for a custom model:
 ```php
 $model = new Model();
 
 $this->gaugeFactory()->startTimer();
 
 $this->message()->info('Import started...')->concerning($model)->save();
+
+// processing...
 
 $this->gaugeFactory()
     ->concerning($this->messageFactory()->last())
@@ -27,6 +34,7 @@ $this->gaugeFactory()
     ->save();
 ```
 
+Good old exception logging:
 ```php
 $msg = $this->message(new Exception('Oops'))->setContext('example')->save();
 
@@ -35,23 +43,20 @@ echo $msg->body;    // Stack trace ...
 ```
 
 
-## Installation
-
-You can install the package via composer:
-
+## Usage
+Install with composer:
 ```bash
 composer require dotburo/laravel-molog
 ```
 
-You can publish and run the migrations with:
-
+Publish the config file and migrations and migrate your app:
 ```bash
-php artisan vendor:publish --provider="Dotburo\Molog\MologServiceProvider" --tag="laravel-molog-migrate"
+php artisan vendor:publish --provider="Dotburo\Molog\MologServiceProvider"
+
 php artisan migrate
 ```
 
-## Logging trait examples
-
+Wherever you need logging for a model, use the `Logging` trait:
 ```php
 use Dotburo\Molog\Models\Gauge;
 use Dotburo\Molog\Traits\Logging;
@@ -60,10 +65,8 @@ use Psr\Log\LogLevel;
 class YourClass {
     use Logging;
     
-    protected function yourMethod()
+    protected function handle()
     {
-        // Message logging examples
-        
         // This will store three messages
         $this->messageFactory()
             ->message(LogLevel::INFO, 'Import process initiated')
@@ -80,7 +83,6 @@ class YourClass {
             ->save();
         
         // Gauge examples
-        
         $this->gaugeFactory()->concerning($this->messageFactory()->last());
         
         $this->gauge('density', 5)->concerning($this->messageFactory()->first())->save();
@@ -95,6 +97,11 @@ class YourClass {
     }
 }
 ```
+
+
+## Documentation
+Coming soon
+
 
 ## Testing
 
