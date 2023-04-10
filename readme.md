@@ -82,18 +82,20 @@ class YourClass {
             ->setLevel(LogLevel::CRITICAL)
             ->save();
         
-        // Gauge examples
+        // Associate all subsequent metrics with the last message
         $this->gaugeFactory()->concerning($this->messageFactory()->last());
         
+        // Associate this metric with the first message
         $this->gauge('density', 5)->concerning($this->messageFactory()->first())->save();
         
+        // Add three metrics associated with the last message
         $this->gauges([
             ['key' => 'density', 'value' => 5.3567],
             ['key' => 'pressure', 'value' => 2.35, 'unit' => 'bar', 'type' => 'int'],
             new Gauge(['key' => 'quality', 'value' => 3])
         ]);
         
-        // This will save 4 metrics
+        // This will save the four metrics
         $this->gaugeFactory()->save();
     }
 }
