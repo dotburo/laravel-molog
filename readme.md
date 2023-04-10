@@ -13,7 +13,7 @@ In its simplest form:
 ```php
 $user = auth()->user();
 
-$this->message()->info('Mail sent!')->concerning($user)->save();
+$this->message('Mail sent!')->concerning($user)->save();
 ```
 
 A slightly more advanced example - a message with metrics for a custom model:
@@ -22,7 +22,7 @@ $model = new Model();
 
 $this->gaugeFactory()->startTimer();
 
-$this->message()->info('Import started...')->concerning($model)->save();
+$this->message()->notice('Import started...')->concerning($model)->save();
 
 // processing...
 
@@ -69,7 +69,7 @@ class YourClass {
     {
         // This will store three messages
         $this->messageFactory()
-            ->message(LogLevel::INFO, 'Import process initiated')
+            ->message('Import process initiated', LogLevel::INFO)
             ->notice('Import process ongoing')
             ->warn('Import process aborted')
             ->save();
@@ -93,6 +93,7 @@ class YourClass {
             new Gauge(['key' => 'quality', 'value' => 3])
         ]);
         
+        // This will save 4 metrics
         $this->gaugeFactory()->save();
     }
 }
