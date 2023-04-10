@@ -66,7 +66,7 @@ abstract class Event extends Model implements EventInterface
     /** @inheritdoc */
     public function concerning(?Model $model = null): self
     {
-        if (!$model) {
+        if (! $model) {
             $this->loggable()->dissociate();
 
             return $this;

@@ -3,7 +3,6 @@
 namespace Dotburo\Molog\Factories;
 
 use Dotburo\Molog\Contracts\LoggerInterface;
-use Dotburo\Molog\Models\Event;
 use Dotburo\Molog\Models\Message;
 use Dotburo\Molog\MologConstants;
 use Dotburo\Molog\Traits\LoggerMethods;

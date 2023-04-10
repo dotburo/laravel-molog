@@ -23,7 +23,7 @@ class Gauge extends Event
 
     /** @inheritdoc */
     protected $attributes = [
-        'type' => MologConstants::GAUGE_DEFAULT_TYPE
+        'type' => MologConstants::GAUGE_DEFAULT_TYPE,
     ];
 
     /** @inheritdoc */
@@ -70,7 +70,7 @@ class Gauge extends Event
      */
     protected function setValueAttribute($value): Gauge
     {
-        if (!$value) {
+        if (! $value) {
             $this->attributes['value'] = 0;
 
             return $this;
