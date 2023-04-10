@@ -24,7 +24,7 @@ class CreateMologTables extends Migration
 
             $table->string('context')->nullable()->index();
 
-            $debugLevelCode = Message::levelCode(MologConstants::DEBUG);
+            $debugLevelCode = Message::levelCode(MologConstants::MSG_DEFAULT_LEVEL);
 
             $table->unsignedTinyInteger('level')->default($debugLevelCode)->index();
 
@@ -45,10 +45,11 @@ class CreateMologTables extends Migration
 
             $table->string('context')->nullable()->index();
 
-            $table->enum('type', ['float', 'int'])->default('float');
             $table->string('key');
             $table->double('value')->default(0);
             $table->string('unit', 10)->nullable();
+            $table->enum('type', [MologConstants::GAUGE_FLOAT_TYPE, MologConstants::GAUGE_INT_TYPE])
+                ->default(MologConstants::GAUGE_DEFAULT_TYPE);
 
             $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->unsignedBigInteger('tenant_id')->nullable()->index();

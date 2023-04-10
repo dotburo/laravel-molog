@@ -9,6 +9,6 @@ docs
 phpunit.xml
 psalm.xml
 testbench.yaml
-test-coverage
 todo.md
 vendor
+tests-coverage

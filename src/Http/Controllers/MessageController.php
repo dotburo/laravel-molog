@@ -3,7 +3,7 @@
 namespace Dotburo\Molog\Http\Controllers;
 
 use Dotburo\Molog\Models\Message;
-use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -12,9 +12,9 @@ class MessageController extends BaseController
     /**
      * Display a listing of the resource.
      * @param Request $request
-     * @return Jsonable
+     * @return LengthAwarePaginator
      */
-    public function index(Request $request): Jsonable
+    public function index(Request $request): LengthAwarePaginator
     {
         $query = Message::query();
 

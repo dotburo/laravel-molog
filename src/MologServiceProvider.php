@@ -37,12 +37,18 @@ class MologServiceProvider extends ServiceProvider
      */
     protected function publishResources(): void
     {
-        $this->publishes([
-            realpath(__DIR__ . '/../database/migrations/2021_10_14_000000_create_molog_tables.php') => database_path('migrations'),
-        ], 'laravel-molog-migrate');
+        /** @var string $migrationPath */
+        $migrationPath = realpath(__DIR__ . '/../database/migrations/2021_10_14_000000_create_molog_tables.php');
 
         $this->publishes([
-            realpath(__DIR__ . '/../config/molog.php') => config_path('molog.php'),
+            $migrationPath => database_path('migrations'),
+        ], 'laravel-molog-migrate');
+
+        /** @var string $configPath */
+        $configPath = realpath(__DIR__ . '/../config/molog.php');
+
+        $this->publishes([
+            $configPath => config_path('molog.php'),
         ], 'laravel-molog-config');
     }
 

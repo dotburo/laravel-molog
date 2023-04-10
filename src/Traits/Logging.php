@@ -8,7 +8,8 @@ use Dotburo\Molog\Models\Event;
 use Dotburo\Molog\Models\Gauge;
 use Dotburo\Molog\Models\Message;
 use Dotburo\Molog\MologConstants;
-use Ramsey\Collection\Collection;
+use Illuminate\Support\Collection;
+use Throwable;
 
 /**
  * Provides logging.
@@ -44,15 +45,15 @@ trait Logging
 
     /**
      * Return the existing factory or instantiate a new one.
-     * @param string|Message $subject
+     * @param string|Throwable $subject
      * @param string $level
      * @return Message|Event
      */
-    public function message(string $subject = '', string $level = MologConstants::DEBUG): Message
+    public function message($subject = '', string $level = MologConstants::MSG_DEFAULT_LEVEL): Message
     {
         $factory = $this->messageFactory();
 
-        $this->messageFactory->log($level, $subject);
+        $this->messageFactory->log($subject, $level);
 
         return $factory->last();
     }
@@ -65,7 +66,7 @@ trait Logging
      * @param string $type
      * @return Gauge|Event
      */
-    public function gauge(string $key = '', $value = 0, string $type = MologConstants::DEFAULT_GAUGE_TYPE, string $unit = ''): Gauge
+    public function gauge(string $key = '', $value = 0, string $unit = '', string $type = MologConstants::GAUGE_DEFAULT_TYPE): Gauge
     {
         $factory = $this->gaugeFactory();
 
@@ -87,6 +88,6 @@ trait Logging
             $this->gaugeFactory->gauges($gauges);
         }
 
-        return $factory->all();
+        return $factory->events();
     }
 }

@@ -14,7 +14,15 @@ use Illuminate\Support\Collection;
  */
 class GaugeFactory extends EventFactory
 {
-    public function gauge($key, $value = 0, string $type = MologConstants::DEFAULT_GAUGE_TYPE, string $unit = ''): GaugeFactory
+    /**
+     * Create a new metric and add it to the collection.
+     * @param Gauge|string $key
+     * @param int|float $value
+     * @param string $type
+     * @param string $unit
+     * @return $this
+     */
+    public function gauge($key, $value = 0, string $type = MologConstants::GAUGE_DEFAULT_TYPE, string $unit = ''): GaugeFactory
     {
         $gauge = $key instanceof Gauge
             ? $key
@@ -54,11 +62,11 @@ class GaugeFactory extends EventFactory
      * @param string $unit
      * @return $this
      */
-    public function increment(string $key, $value = 1, string $type = MologConstants::DEFAULT_GAUGE_TYPE, string $unit = ''): GaugeFactory
+    public function increment(string $key, $value = 1, string $type = MologConstants::GAUGE_DEFAULT_TYPE, string $unit = ''): GaugeFactory
     {
-        /** @var Gauge $gauge */
         if ($gauge = $this->getGaugesByKey($key)->first()) {
-            $gauge->setValueAttribute($gauge->value + $value);
+            /** @var Gauge $gauge */
+            $gauge->setValue($gauge->value + $value);
 
             return $this;
         }
@@ -74,11 +82,11 @@ class GaugeFactory extends EventFactory
      * @param string $unit
      * @return $this
      */
-    public function decrement(string $key, $value = 1, string $type = MologConstants::DEFAULT_GAUGE_TYPE, string $unit = ''): GaugeFactory
+    public function decrement(string $key, $value = 1, string $type = MologConstants::GAUGE_DEFAULT_TYPE, string $unit = ''): GaugeFactory
     {
-        /** @var Gauge $gauge */
         if ($gauge = $this->getGaugesByKey($key)->first()) {
-            $gauge->setValueAttribute($gauge->value - $value);
+            /** @var Gauge $gauge */
+            $gauge->setValue($gauge->value - $value);
 
             return $this;
         }

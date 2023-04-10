@@ -29,7 +29,8 @@
         "orchestra/testbench": "^5.20 || ^6.23 || ^7.0 || ^8.0",
         "pestphp/pest": "^1.18 || ^2",
         "pestphp/pest-plugin-laravel": "^1.1 || ^2",
-        "vimeo/psalm": "^4.8"
+        "phpstan/phpstan": "^1.10",
+        "vimeo/psalm": "^5.9"
     },
     "autoload": {
         "psr-4": {
@@ -43,8 +44,9 @@
     },
     "scripts": {
         "psalm": "./vendor/bin/psalm --show-info=true",
+        "stan": "vendor/bin/phpstan analyse src/ --level=5",
         "test": "./vendor/bin/pest --no-coverage",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage test-coverage"
+        "test-coverage": "vendor/bin/pest --coverage-html tests-coverage"
     },
     "config": {
         "sort-packages": true,

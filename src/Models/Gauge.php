@@ -2,6 +2,7 @@
 
 namespace Dotburo\Molog\Models;
 
+use Dotburo\Molog\Exceptions\MologException;
 use Dotburo\Molog\MologConstants;
 
 /**
@@ -17,58 +18,135 @@ use Dotburo\Molog\MologConstants;
  */
 class Gauge extends Event
 {
-    /** @inheritdoc  */
-    protected $fillable = [
-        'key', 'value', 'unit', 'type',
+    /** @inheritdoc */
+    protected $table = 'gauges';
+
+    /** @inheritdoc */
+    protected $attributes = [
+        'type' => MologConstants::GAUGE_DEFAULT_TYPE
     ];
 
     /** @inheritdoc */
     protected $casts = [
         'value' => 'float',
-        'created_at' => 'datetime',
     ];
 
-    public function setTypeAttribute(?string $type): Gauge
+    /**
+     * Public setter.
+     * @param string $key
+     * @return $this
+     */
+    public function setKey(string $key): Gauge
     {
-        $this->attributes['type'] = ! empty($type) ? strtolower($type) : MologConstants::DEFAULT_GAUGE_TYPE;
+        return $this->setKeyAttribute($key);
+    }
+
+    /**
+     * Laravel mutator.
+     * @param string $key
+     * @return $this
+     */
+    protected function setKeyAttribute(string $key): Gauge
+    {
+        $this->attributes['key'] = trim($key);
 
         return $this;
     }
 
-    public function setUnitAttribute(?string $unit): Gauge
+    /**
+     * Public setter.
+     * @param float|int $value
+     * @return $this
+     */
+    public function setValue($value): Gauge
+    {
+        return $this->setValueAttribute($value);
+    }
+
+    /**
+     * Make sure the value is casted as soon as it is set.
+     * @param float|int $value
+     * @return $this
+     */
+    protected function setValueAttribute($value): Gauge
+    {
+        if (!$value) {
+            $this->attributes['value'] = 0;
+
+            return $this;
+        }
+
+        $this->attributes['value'] =
+            $this->type === MologConstants::GAUGE_FLOAT_TYPE ? (float)$value : (int)$value;
+
+        return $this;
+    }
+
+    /**
+     * Return the value of the metric as int or (rounded) float.
+     * @return float|int
+     */
+    protected function getValueAttribute()
+    {
+        $value = $this->attributes['value'];
+
+        if ($this->attributes['type'] === MologConstants::GAUGE_INT_TYPE) {
+            return (int)$value;
+        }
+
+        $round = app('config')->get('molog.gauge_float_round') ?? MologConstants::GAUGE_DEFAULT_ROUNDING;
+
+        return $round > -1 ? round($value, (int)$round) : $value;
+    }
+
+    /**
+     * Public setter.
+     * @param string $type
+     * @return $this
+     * @throws MologException
+     */
+    public function setType(string $type): Gauge
+    {
+        return $this->setTypeAttribute($type);
+    }
+
+    /**
+     * Laravel mutator.
+     * @param string $type
+     * @return $this
+     * @throws MologException
+     */
+    protected function setTypeAttribute(string $type): Gauge
+    {
+        if ($type !== MologConstants::GAUGE_FLOAT_TYPE && $type !== MologConstants::GAUGE_INT_TYPE) {
+            throw new MologException("'$type' is not a valid Gauge data type");
+        }
+
+        $this->attributes['type'] = $type;
+
+        return $this;
+    }
+
+    /**
+     * Public setter.
+     * @param string $unit
+     * @return $this
+     */
+    public function setUnit(string $unit = ''): Gauge
+    {
+        return $this->setUnitAttribute($unit);
+    }
+
+    /**
+     * Laravel mutator, make sure to cast to null if empty.
+     * @param string $unit
+     * @return $this
+     */
+    protected function setUnitAttribute(string $unit = ''): Gauge
     {
         $this->attributes['unit'] = $unit ?: null;
 
         return $this;
-    }
-
-    public function setKeyAttribute(string $key): Gauge
-    {
-        $this->attributes['key'] = $key;
-
-        return $this;
-    }
-
-    public function setValueAttribute($value): Gauge
-    {
-        $this->attributes['value'] = $value ?: 0;
-
-        return $this;
-    }
-
-    public function getValueAttribute()
-    {
-        $value = $this->attributes['value'];
-
-        settype($value, $this->attributes['type']);
-
-        $round = (int)config('molog.gauge_float_round', MologConstants::DEFAULT_GAUGE_ROUNDING);
-
-        if ($round > -1) {
-            return round($value, $round);
-        }
-
-        return $value;
     }
 
     /**

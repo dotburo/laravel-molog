@@ -2,7 +2,7 @@
 
 namespace Dotburo\Molog\Factories;
 
-use Dotburo\Molog\EventInterface;
+use Dotburo\Molog\Contracts\EventInterface;
 use Dotburo\Molog\Exceptions\MologException;
 use Dotburo\Molog\Models\Event;
 use Dotburo\Molog\Models\Gauge;
@@ -17,7 +17,7 @@ use Stringable;
  * @copyright 2021 dotburo
  * @author dotburo <code@dotburo.org>
  */
-class EventFactory implements EventInterface, Stringable
+abstract class EventFactory implements EventInterface, Stringable
 {
     /** @var Collection */
     protected Collection $items;
@@ -35,11 +35,21 @@ class EventFactory implements EventInterface, Stringable
     protected ?int $tenant_id = null;
 
     /**
-     * EventFactory constructor.
+     * Initialize the collection of events.
+     * @return void
      */
     public function __construct()
     {
         $this->reset();
+    }
+
+    /**
+     * Return the collection of messages/gauges.
+     * @return Collection
+     */
+    public function events(): Collection
+    {
+        return $this->items;
     }
 
     /**

@@ -1,9 +1,39 @@
+
 # Molog for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/dotburo/laravel-molog.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-molog)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/dotburo/laravel-molog/run-tests?label=tests)](https://github.com/dotburo/laravel-molog/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/dotburo/laravel-molog/Check%20&%20fix%20styling?label=code%20style)](https://github.com/dotburo/laravel-molog/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/dotburo/laravel-molog.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-molog)
+
+```php
+$user = auth()->user();
+
+$this->message()->info('Mail sent!')->concerning($user)->save();
+```
+
+```php
+$model = new Model();
+
+$this->gaugeFactory()->startTimer();
+
+$this->message()->info('Import started...')->concerning($model)->save();
+
+$this->gaugeFactory()
+    ->concerning($this->messageFactory()->last())
+    ->gauge('Files accepted', 16)
+    ->gauge('Files refused', 2)
+    ->stopTimer()
+    ->save();
+```
+
+```php
+$msg = $this->message(new Exception('Oops'))->setContext('example')->save();
+
+echo $msg;          // 2023-04-10 17:34:22.348 [debug] [example] Oops
+echo $msg->body;    // Stack trace ...
+```
+
 
 ## Installation
 

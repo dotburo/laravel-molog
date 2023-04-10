@@ -2,42 +2,14 @@
 
 namespace Dotburo\Molog\Tests;
 
-use Dotburo\Molog\Models\Message;
 use Dotburo\Molog\Traits\Logging;
 use Exception;
-use Illuminate\Foundation\Auth\User;
 use Psr\Log\LogLevel;
 use Throwable;
 
-class Logs
+class UseCases
 {
     use Logging;
-
-    public function handle()
-    {
-        $user = new User();
-
-        $user->id = 4;
-
-        /** @var Message $message */
-        $message = $this->message('Preparing to send message...', LogLevel::DEBUG);
-
-        $message->concerning($user)
-            ->setLevel(LogLevel::CRITICAL)
-            ->setBody(new Exception('Sending error'))
-            ->setContext('mailing')
-            ->setTenant($user)
-            ->setUser($user);
-
-        $message->level = LogLevel::ERROR;
-        $message->body = '';
-        $message->tenant_id = 30;
-        $message->user_id = 20;
-
-        $message->save();
-
-        return $message;
-    }
 
     public function useCaseOne()
     {

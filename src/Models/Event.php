@@ -3,7 +3,9 @@
 namespace Dotburo\Molog\Models;
 
 use Carbon\Carbon;
-use Dotburo\Molog\EventInterface;
+use DateTime;
+use DateTimeInterface;
+use Dotburo\Molog\Contracts\EventInterface;
 use Dotburo\Molog\MologConstants;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -20,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @copyright 2021 dotburo
  * @author dotburo <code@dotburo.org>
  */
-class Event extends Model implements EventInterface
+abstract class Event extends Model implements EventInterface
 {
     /** @inheritdoc */
     public const UPDATED_AT = null;
@@ -29,7 +31,7 @@ class Event extends Model implements EventInterface
     protected $dateFormat = MologConstants::CREATED_AT_FORMAT;
 
     /** @inheritdoc */
-    protected $guarded = ['id', 'created_at'];
+    protected $guarded = ['id'];
 
     /** @inheritdoc */
     protected $hidden = ['id'];
@@ -49,25 +51,27 @@ class Event extends Model implements EventInterface
      */
     public function __construct(array $attributes = [])
     {
-        $this->updateTimestamps();
+        # Set `created_at` asap to approximate the time at which the event is recorded.
+        $attributes[$this->getCreatedAtColumn()] = new DateTime();
 
         parent::__construct($attributes);
     }
 
-    /**
-     * Save the time with millisecond precision.
-     * {@inheritdoc}
-     */
-    public function setCreatedAt($value)
+    /** @inheritdoc */
+    protected function serializeDate(DateTimeInterface $date): string
     {
-        $this->{$this->getCreatedAtColumn()} = $value->format(MologConstants::CREATED_AT_FORMAT);
-
-        return $this;
+        return $date->format(MologConstants::CREATED_AT_FORMAT);
     }
 
     /** @inheritdoc */
-    public function concerning(Model $model): self
+    public function concerning(?Model $model = null): self
     {
+        if (!$model) {
+            $this->loggable()->dissociate();
+
+            return $this;
+        }
+
         $this->loggable()->associate($model);
 
         return $this;
@@ -113,10 +117,10 @@ class Event extends Model implements EventInterface
         return $this;
     }
 
-    /** @inheritdoc  */
+    /** @inheritdoc */
     public function setUser($user = 0): self
     {
-        return $this->setTenantIdAttribute($user);
+        return $this->setUserIdAttribute($user);
     }
 
     /**

@@ -12,6 +12,9 @@ use Psr\Log\LogLevel;
  */
 final class MologConstants extends LogLevel
 {
+    /** @var string */
+    public const CREATED_AT_FORMAT = 'Y-m-d H:i:s.v';
+
     /** @var int[] */
     public const LEVEL_CODES = [
         parent::EMERGENCY => 0,
@@ -25,11 +28,17 @@ final class MologConstants extends LogLevel
     ];
 
     /** @var string */
-    public const DEFAULT_GAUGE_TYPE = 'float';
-
-    /** @var int */
-    public const DEFAULT_GAUGE_ROUNDING = -1;
+    public const MSG_DEFAULT_LEVEL = parent::DEBUG;
 
     /** @var string */
-    public const CREATED_AT_FORMAT = 'Y-m-d H:i:s.u';
+    public const GAUGE_INT_TYPE = 'int';
+
+    /** @var string */
+    public const GAUGE_FLOAT_TYPE = 'float';
+
+    /** @var string */
+    public const GAUGE_DEFAULT_TYPE = self::GAUGE_FLOAT_TYPE;
+
+    /** @var int */
+    public const GAUGE_DEFAULT_ROUNDING = -1;
 }

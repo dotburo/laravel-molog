@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Dotburo\Molog\Models\Gauge;
 use Dotburo\Molog\Models\Message;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
@@ -28,10 +29,11 @@ class DatabaseCleanup extends Command
      */
     public function handle(): int
     {
-        $time = Carbon::parse($this->argument('datetime'));
+        $time = Carbon::parse((string)$this->argument('datetime'));
 
         $this->info("Deleting messages and gauges older than {$time->toDateTimeString()}...");
 
+        /** @var Collection $messages */
         $messages = Message::query()
             ->where('created_at', '<=', $time)
             ->get();

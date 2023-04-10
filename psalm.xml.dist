@@ -13,4 +13,16 @@
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
+
+    <issueHandlers>
+        <MissingPropertyType errorLevel="suppress" />
+
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <file name="src/Commands/DatabaseCleanup.php" />
+                <referencedProperty name="Illuminate\Database\Eloquent\Model::$table" />
+            </errorLevel>
+        </PropertyNotSetInConstructor>
+
+    </issueHandlers>
 </psalm>

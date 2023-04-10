@@ -2,9 +2,12 @@
 
 namespace Dotburo\Molog\Factories;
 
+use Dotburo\Molog\Contracts\LoggerInterface;
+use Dotburo\Molog\Models\Event;
 use Dotburo\Molog\Models\Message;
-use Dotburo\Molog\Traits\PsrLoggerMethods;
-use Psr\Log\LoggerInterface;
+use Dotburo\Molog\MologConstants;
+use Dotburo\Molog\Traits\LoggerMethods;
+use Throwable;
 
 /**
  * Message factory class.
@@ -14,16 +17,27 @@ use Psr\Log\LoggerInterface;
  */
 class MessageFactory extends EventFactory implements LoggerInterface
 {
-    use PsrLoggerMethods;
+    use LoggerMethods;
 
     /**
-     * Implements default PSR logging method.
+     * Create a new message and add it to the collection.
+     * @param string|Throwable $subject
+     * @param string|int $level
+     * @return self
+     */
+    public function message($subject, $level = MologConstants::MSG_DEFAULT_LEVEL): MessageFactory
+    {
+        return $this->log($subject, $level);
+    }
+
+    /**
+     * Implements default "PSR" logging method.
      * {@inheritdoc}
      */
-    public function log($level, $subject, array $context = []): MessageFactory
+    public function log($subject, $level = MologConstants::MSG_DEFAULT_LEVEL): MessageFactory
     {
-        $message = $subject instanceof Message
-            ? $subject
+        $message = $subject instanceof Throwable
+            ? Message::createFromException($subject, $level)
             : new Message([
                 'level' => $level,
                 'subject' => $subject,
@@ -34,17 +48,5 @@ class MessageFactory extends EventFactory implements LoggerInterface
         $this->items->push($message);
 
         return $this;
-    }
-
-    /**
-     * Provide similar interface as `GaugeFactory::gauge()`.
-     * @param mixed $level
-     * @param string $subject
-     * @param array $context
-     * @return $this
-     */
-    public function message($level, $subject, array $context = []): MessageFactory
-    {
-        return $this->log($level, $subject, $context);
     }
 }
