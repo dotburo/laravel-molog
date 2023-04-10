@@ -36,7 +36,7 @@ $this->gaugeFactory()
 
 Good old exception logging:
 ```php
-$msg = $this->message(new Exception('Oops'))->setContext('example')->save();
+$msg = $this->message(new Exception('Oops'))->setContext('example');
 
 echo $msg;          // 2023-04-10 17:34:22.348 [debug] [example] Oops
 echo $msg->body;    // Stack trace ...
