@@ -3,7 +3,7 @@
 namespace Dotburo\Molog\Models;
 
 use Carbon\Carbon;
-use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Dotburo\Molog\Contracts\EventInterface;
 use Dotburo\Molog\MologConstants;
@@ -52,7 +52,7 @@ abstract class Event extends Model implements EventInterface
     public function __construct(array $attributes = [])
     {
         # Set `created_at` asap to approximate the time at which the event is recorded.
-        $attributes[$this->getCreatedAtColumn()] = new DateTime();
+        $attributes[$this->getCreatedAtColumn()] = new DateTimeImmutable();
 
         parent::__construct($attributes);
     }
