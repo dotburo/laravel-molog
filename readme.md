@@ -1,8 +1,7 @@
 # Molog for Laravel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/dotburo/laravel-molog.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-molog)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/dotburo/laravel-molog/run-tests?label=tests)](https://github.com/dotburo/laravel-molog/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/dotburo/laravel-molog/Check%20&%20fix%20styling?label=code%20style)](https://github.com/dotburo/laravel-molog/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/dotburo/laravel-molog/run-tests.yml?branch=main&label=Tests&style=flat-square)](https://github.com/dotburo/laravel-molog/actions/workflows/run-tests.yml)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/dotburo/laravel-molog.svg?style=flat-square&label=Version)](https://packagist.org/packages/dotburo/laravel-molog)
 [![Total Downloads](https://img.shields.io/packagist/dt/dotburo/laravel-molog.svg?style=flat-square)](https://packagist.org/packages/dotburo/laravel-molog)
 
 Laravel Molog enables you to log messages and store metrics that are related to specific models. Akin to Spatie's 
@@ -56,48 +55,41 @@ php artisan vendor:publish --provider="Dotburo\Molog\MologServiceProvider"
 php artisan migrate
 ```
 
-Wherever you need logging for a model, use the `Logging` trait:
-
+Wherever you need logging, use the `Logging` trait:
 ```php
-use Dotburo\Molog\Models\Gauge;
-use Dotburo\Molog\Traits\Logging;
-use Psr\Log\LogLevel;
-
 class YourClass {
-    use Logging;
+
+    use \Dotburo\Molog\Traits\Logging;
     
     protected function handle()
     {
         // This will store three messages
         $this->messages()
-            ->message('Import process initiated', LogLevel::INFO)
+            ->message('Import process initiated', \Psr\Log\LogLevel::INFO)
             ->notice('Import process ongoing')
             ->warn('Import process aborted')
             ->save();
         
-       // This will log one message with the subject 'aborted' and level critical
+       // This will store one message with the subject 'aborted' and level critical
        $this->message()
             ->setContext('Import process')
             ->notice('ongoing')
             ->warn('aborted')
-            ->setLevel(LogLevel::CRITICAL)
+            ->setLevel(\Dotburo\Molog\MologConstants::CRITICAL)
             ->save();
         
         // Associate all subsequent metrics with the last message
         $this->gauges()->concerning($this->messages()->last());
         
-        // Associate this metric with the first message
+        // Associate this metric of type INT with the first message
         $this->gauge('density', 5)->concerning($this->messages()->first())->save();
         
         // Add three metrics associated with the last message
-        $this->gauges([
-            ['key' => 'density', 'value' => 5.3567],
-            ['key' => 'pressure', 'value' => 2.35, 'unit' => 'bar', 'type' => 'int'],
-            new Gauge(['key' => 'quality', 'value' => 3])
-        ]);
-        
-        // This will save the four metrics
-        $this->gauges()->save();
+        $this->gauges()
+            ->gauge('density', 5.3567)  // updates the previous 'density' metric to the FLOAT value
+            ->gauge('pressure', 2.35, 'bar', \Dotburo\Molog\MologConstants::GAUGE_INT_TYPE) // forcibly cast to FLOAT
+            ->gauge('quality', 3)
+            ->save();
     }
 }
 ```
