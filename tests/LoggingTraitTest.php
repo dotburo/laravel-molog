@@ -79,12 +79,12 @@ it('overwrites itself', function () {
 it('breaks down exceptions', function () {
     $exception = new Exception('Something went wrong');
 
-    $this->message($exception)->save();
+    $this->message()->error($exception)->save();
 
     /** @var Message $msg */
     $msg = Message::query()->first();
 
-    expect($msg->level)->toBe(MologConstants::MSG_DEFAULT_LEVEL);
+    expect($msg->level)->toBe(MologConstants::ERROR);
     expect($msg->subject)->toBe($exception->getMessage());
     expect($msg->body)->toBe($exception->getTraceAsString());
 });

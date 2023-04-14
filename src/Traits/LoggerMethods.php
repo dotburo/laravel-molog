@@ -13,49 +13,49 @@ use Dotburo\Molog\MologConstants;
 trait LoggerMethods
 {
     /** @inheritdoc */
-    public function emergency(string $subject): self
+    public function emergency($subject): self
     {
         return $this->log($subject, MologConstants::EMERGENCY);
     }
 
     /** @inheritdoc */
-    public function alert(string $subject): self
+    public function alert($subject): self
     {
         return $this->log($subject, MologConstants::ALERT);
     }
 
     /** @inheritdoc */
-    public function critical(string $subject): self
+    public function critical($subject): self
     {
         return $this->log($subject, MologConstants::CRITICAL);
     }
 
     /** @inheritdoc */
-    public function error(string $subject): self
+    public function error($subject): self
     {
         return $this->log($subject, MologConstants::ERROR);
     }
 
     /** @inheritdoc */
-    public function warning(string $subject): self
+    public function warning($subject): self
     {
         return $this->log($subject, MologConstants::WARNING);
     }
 
     /** @inheritdoc */
-    public function notice(string $subject): self
+    public function notice($subject): self
     {
         return $this->log($subject, MologConstants::NOTICE);
     }
 
     /** @inheritdoc */
-    public function info(string $subject): self
+    public function info($subject): self
     {
         return $this->log($subject, MologConstants::INFO);
     }
 
     /** @inheritdoc */
-    public function debug(string $subject): self
+    public function debug($subject): self
     {
         return $this->log($subject);
     }

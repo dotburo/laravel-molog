@@ -19,66 +19,66 @@ interface LoggerInterface
 {
     /**
      * System is unusable.
-     * @param string $subject
+     * @param string|Throwable $subject
      * @return self
      */
-    public function emergency(string $subject): self;
+    public function emergency($subject): self;
 
     /**
      * Action must be taken immediately.
      * Example: Entire website down, database unavailable, etc. This should
      * trigger the SMS alerts and wake you up.
-     * @param string $subject
+     * @param string|Throwable $subject
      * @return self
      */
-    public function alert(string $subject): self;
+    public function alert($subject): self;
 
     /**
      * Critical conditions.
      * Example: Application component unavailable, unexpected exception.
-     * @param string $subject
+     * @param string|Throwable $subject
      * @return self
      */
-    public function critical(string $subject): self;
+    public function critical($subject): self;
 
     /**
      * Runtime errors that do not require immediate action but should typically
      * be logged and monitored.
-     * @param string $subject
+     * @param string|Throwable $subject
      * @return self
      */
-    public function error(string $subject): self;
+    public function error($subject): self;
 
     /**
      * Exceptional occurrences that are not errors.
      * Example: Use of deprecated APIs, poor use of an API, undesirable things
      * that are not necessarily wrong.
-     * @param string $subject
+     * @param string|Throwable $subject
      * @return self
      */
-    public function warning(string $subject): self;
+    public function warning($subject): self;
 
     /**
      * Normal but significant events.
-     * @param string $subject
+     * @param string|Throwable $subject
      * @return self
      */
-    public function notice(string $subject): self;
+    public function notice($subject): self;
 
     /**
      * Interesting events.
      * Example: User logs in, SQL logs.
-     * @param string $subject
+     * @param string|Throwable $subject
      * @return self
      */
-    public function info(string $subject): self;
+    public function info($subject): self;
 
     /**
      * Detailed debug information.
-     * @param string $subject
+     * @param string|Throwable $subject
      * @return self
      */
-    public function debug(string $subject): self;
+    public function debug($subject): self;
 
     /**
      * Logs with an arbitrary level.
