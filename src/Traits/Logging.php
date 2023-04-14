@@ -8,7 +8,6 @@ use Dotburo\Molog\Models\Event;
 use Dotburo\Molog\Models\Gauge;
 use Dotburo\Molog\Models\Message;
 use Dotburo\Molog\MologConstants;
-use Illuminate\Support\Collection;
 use Throwable;
 
 /**
@@ -29,18 +28,25 @@ trait Logging
      * Return the factory for the parent object, instantiate if needed.
      * @return MessageFactory
      */
-    protected function messageFactory(): MessageFactory
+    protected function messages(): MessageFactory
     {
         return $this->messageFactory ?? $this->messageFactory = new MessageFactory();
     }
 
     /**
      * Return the factory for the parent object, instantiate if needed.
+     * @param array $gauges
      * @return GaugeFactory
      */
-    protected function gaugeFactory(): GaugeFactory
+    protected function gauges(array $gauges = []): GaugeFactory
     {
-        return $this->gaugeFactory ?? $this->gaugeFactory = new GaugeFactory();
+        $this->gaugeFactory ?? $this->gaugeFactory = new GaugeFactory();
+
+        if ($gauges) {
+            $this->gaugeFactory->gauges($gauges);
+        }
+
+        return $this->gaugeFactory;
     }
 
     /**
@@ -51,7 +57,7 @@ trait Logging
      */
     public function message($subject = '', string $level = MologConstants::MSG_DEFAULT_LEVEL): Message
     {
-        $factory = $this->messageFactory();
+        $factory = $this->messages();
 
         $this->messageFactory->log($subject, $level);
 
@@ -67,26 +73,10 @@ trait Logging
      */
     public function gauge(string $key = '', $value = 0, string $unit = ''): Gauge
     {
-        $factory = $this->gaugeFactory();
+        $factory = $this->gauges();
 
         $this->gaugeFactory->gauge($key, $value, $unit);
 
         return $factory->last();
-    }
-
-    /**
-     * Create a JobLog instance for the parent class.
-     * @param Gauge[]|array[] $gauges
-     * @return Collection
-     */
-    public function gauges(array $gauges = []): Collection
-    {
-        $factory = $this->gaugeFactory();
-
-        if ($gauges) {
-            $this->gaugeFactory->gauges($gauges);
-        }
-
-        return $factory->events();
     }
 }

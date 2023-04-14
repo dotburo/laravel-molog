@@ -20,13 +20,13 @@ A slightly more advanced example - a message with metrics for a custom model:
 ```php
 $model = new Model();
 
-$this->gaugeFactory()->startTimer();
+$this->gauges()->startTimer();
 
 $this->message()->notice('Import started...')->concerning($model)->save();
 
 // processing...
 
-$this->gaugeFactory()
+$this->gauges()
     ->concerning($this->messageFactory()->last())
     ->gauge('Files accepted', 16)
     ->gauge('Files refused', 2)
@@ -57,6 +57,7 @@ php artisan migrate
 ```
 
 Wherever you need logging for a model, use the `Logging` trait:
+
 ```php
 use Dotburo\Molog\Models\Gauge;
 use Dotburo\Molog\Traits\Logging;
@@ -68,7 +69,7 @@ class YourClass {
     protected function handle()
     {
         // This will store three messages
-        $this->messageFactory()
+        $this->messages()
             ->message('Import process initiated', LogLevel::INFO)
             ->notice('Import process ongoing')
             ->warn('Import process aborted')
@@ -83,10 +84,10 @@ class YourClass {
             ->save();
         
         // Associate all subsequent metrics with the last message
-        $this->gaugeFactory()->concerning($this->messageFactory()->last());
+        $this->gauges()->concerning($this->messages()->last());
         
         // Associate this metric with the first message
-        $this->gauge('density', 5)->concerning($this->messageFactory()->first())->save();
+        $this->gauge('density', 5)->concerning($this->messages()->first())->save();
         
         // Add three metrics associated with the last message
         $this->gauges([
@@ -96,7 +97,7 @@ class YourClass {
         ]);
         
         // This will save the four metrics
-        $this->gaugeFactory()->save();
+        $this->gauges()->save();
     }
 }
 ```

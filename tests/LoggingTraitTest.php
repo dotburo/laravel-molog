@@ -111,7 +111,7 @@ it('sets & stores all attributes through setter methods', function () {
 });
 
 it('sets & stores global attributes', function () {
-    $this->messageFactory()
+    $this->messages()
         ->setContext($context = 'testing')
         ->setTenant($tenant = 3)
         ->setUser($user = 2);
@@ -135,7 +135,7 @@ it('allows models in user and tenant setters', function () {
     $user2 = new User();
     $user2->id = 234;
 
-    $this->messageFactory()
+    $this->messages()
         ->setTenant($user1)
         ->setUser($user1);
 
@@ -155,7 +155,7 @@ it('allows models in user and tenant setters', function () {
 });
 
 it('instantiates and stores multiple messages', function () {
-    $this->messageFactory()
+    $this->messages()
         ->setContext($context = 'testing')
         ->emergency($subject1 = 'Testing model arguments 1')
         ->notice($subject2 = 'Testing model arguments 2')
@@ -185,7 +185,7 @@ it('associates parent models', function () {
         ->save();
 
     $this->gauge('duration', 120, 's', 'int')
-        ->concerning($this->messageFactory()->last())
+        ->concerning($this->messages()->last())
         ->save();
 
     /** @var Message $message */
@@ -211,7 +211,7 @@ it('nicely outputs to strings', function () {
         ->save();
 
     $this->gauge('duration', 120.3, 's')
-        ->concerning($this->messageFactory()->last())
+        ->concerning($this->messages()->last())
         ->setContext('testing')
         ->save();
 
