@@ -77,7 +77,9 @@ class Message extends Event implements LoggerInterface
     public function log($subject, $level = MologConstants::MSG_DEFAULT_LEVEL): Message
     {
         if ($subject instanceof Throwable) {
-            return static::createFromException($subject, $level);
+            $instance = static::createFromException($subject, $level);
+
+            return $this->fill($instance->getAttributes());
         }
 
         $this->setSubjectAttribute($subject);
