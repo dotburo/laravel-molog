@@ -47,7 +47,7 @@ abstract class EventFactory implements EventInterface, Stringable
      * Return the collection of messages/gauges.
      * @return Collection
      */
-    public function events(): Collection
+    public function collection(): Collection
     {
         return $this->items;
     }
