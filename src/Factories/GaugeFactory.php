@@ -3,7 +3,6 @@
 namespace Dotburo\Molog\Factories;
 
 use Dotburo\Molog\Models\Gauge;
-use Dotburo\Molog\MologConstants;
 use Illuminate\Support\Collection;
 
 /**
@@ -18,11 +17,10 @@ class GaugeFactory extends EventFactory
      * Create a new metric and add it to the collection.
      * @param Gauge|string $key
      * @param int|float $value
-     * @param string $type
      * @param string $unit
      * @return $this
      */
-    public function gauge($key, $value = 0, string $type = MologConstants::GAUGE_DEFAULT_TYPE, string $unit = ''): GaugeFactory
+    public function gauge($key, $value = 0, string $unit = ''): GaugeFactory
     {
         $gauge = $key instanceof Gauge
             ? $key
@@ -30,7 +28,6 @@ class GaugeFactory extends EventFactory
                 'key' => $key,
                 'value' => $value,
                 'unit' => $unit,
-                'type' => $type,
             ]);
 
         $gauge = $this->setGlobalProperties($gauge);
@@ -48,7 +45,7 @@ class GaugeFactory extends EventFactory
     public function gauges(array $items): GaugeFactory
     {
         foreach ($items as $gauge) {
-            $this->gauge($gauge['key'], $gauge['value'], $gauge['type'] ?? '', $gauge['unit'] ?? '');
+            $this->gauge($gauge['key'], $gauge['value'], $gauge['unit'] ?? '');
         }
 
         return $this;
@@ -58,11 +55,10 @@ class GaugeFactory extends EventFactory
      * Increment the metric for the given key and value.
      * @param string $key
      * @param int|float $value
-     * @param string $type
      * @param string $unit
      * @return $this
      */
-    public function increment(string $key, $value = 1, string $type = MologConstants::GAUGE_DEFAULT_TYPE, string $unit = ''): GaugeFactory
+    public function increment(string $key, $value = 1, string $unit = ''): GaugeFactory
     {
         if ($gauge = $this->getGaugesByKey($key)->first()) {
             /** @var Gauge $gauge */
@@ -71,18 +67,17 @@ class GaugeFactory extends EventFactory
             return $this;
         }
 
-        return $this->gauge($key, $value, $type, $unit);
+        return $this->gauge($key, $value, $unit);
     }
 
     /**
      * Decrement the metric for the given key and value.
      * @param string $key
      * @param int|float $value
-     * @param string $type
      * @param string $unit
      * @return $this
      */
-    public function decrement(string $key, $value = 1, string $type = MologConstants::GAUGE_DEFAULT_TYPE, string $unit = ''): GaugeFactory
+    public function decrement(string $key, $value = 1, string $unit = ''): GaugeFactory
     {
         if ($gauge = $this->getGaugesByKey($key)->first()) {
             /** @var Gauge $gauge */
@@ -91,7 +86,7 @@ class GaugeFactory extends EventFactory
             return $this;
         }
 
-        return $this->gauge($key, $value, $type, $unit);
+        return $this->gauge($key, $value, $unit);
     }
 
     /**
@@ -112,7 +107,7 @@ class GaugeFactory extends EventFactory
      */
     public function startTimer(string $key = 'duration'): GaugeFactory
     {
-        return $this->gauge($key, microtime(true), 'float', 's');
+        return $this->gauge($key, microtime(true), 's');
     }
 
     /**

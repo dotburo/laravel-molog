@@ -63,14 +63,13 @@ trait Logging
      * @param string $key
      * @param int|float $value
      * @param string|null $unit
-     * @param string $type
      * @return Gauge|Event
      */
-    public function gauge(string $key = '', $value = 0, string $unit = '', string $type = MologConstants::GAUGE_DEFAULT_TYPE): Gauge
+    public function gauge(string $key = '', $value = 0, string $unit = ''): Gauge
     {
         $factory = $this->gaugeFactory();
 
-        $this->gaugeFactory->gauge($key, $value, $type, $unit);
+        $this->gaugeFactory->gauge($key, $value, $unit);
 
         return $factory->last();
     }

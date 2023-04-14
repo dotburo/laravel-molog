@@ -1,7 +1,9 @@
 <?php
 
 use Dotburo\Molog\Factories\GaugeFactory;
+use Dotburo\Molog\Models\Gauge;
 use Dotburo\Molog\Models\Message;
+use Dotburo\Molog\MologConstants;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -9,23 +11,22 @@ uses(RefreshDatabase::class);
 it('can create, add and update gauges', function () {
     $gaugeFactory = new GaugeFactory();
     $gaugeFactory->setTenant(5);
-    $gaugeFactory->gauge('pressure', 2.35, 'int', 'bar');
+    $gaugeFactory->gauge('pressure', 2.35, 'bar');
     $gaugeFactory->setTenant(7);
     $gaugeFactory->setContext('Import process');
     $gaugeFactory->gauge('density', 5.43);
     //$gaugeFactory->concerning($messageFactory->last());
-    $gaugeFactory->last()->value = 5;
+    $gaugeFactory->last()->setValue(5);
     //$gaugeFactory->save();
     //dd($gaugeFactory->toArray());
     expect($gaugeFactory->count())->toBe(2);
     expect($gaugeFactory->last()->key)->toBe('density');
 
-    /** @var Message $lastMetric */
+    /** @var Gauge $lastMetric */
     $lastMetric = $gaugeFactory->last();
 
-    expect($gaugeFactory->last()->value)->toBe(5.0);
+    expect($gaugeFactory->last()->value)->toBe(5);
 
-    $lastMetric->type = 'float';
     $lastMetric->value = 3.35;
 
     expect($gaugeFactory->last()->value)->toBe(3.35);
@@ -38,5 +39,5 @@ it('can create, add and update gauges', function () {
 
     expect($gaugeFactory->count())->toBe(2);
 
-    expect((string)$gaugeFactory)->toBe("[Import process] density: 3.35" . PHP_EOL . "pressure: 2bar");
+    expect((string)$gaugeFactory)->toBe("[Import process] density: 3.35" . PHP_EOL . "pressure: 2.35bar");
 });

@@ -78,8 +78,9 @@ class Gauge extends Event
             return $this;
         }
 
-        $this->attributes['value'] =
-            $this->type === MologConstants::GAUGE_FLOAT_TYPE ? (float)$value : (int)$value;
+        $this->attributes['type'] = is_float($value) ? MologConstants::GAUGE_FLOAT_TYPE : MologConstants::GAUGE_INT_TYPE;
+
+        $this->attributes['value'] = (float)$value;
 
         return $this;
     }
@@ -92,6 +93,7 @@ class Gauge extends Event
     {
         $value = $this->attributes['value'];
 
+        # The value is always stored as float, we need to cast it to int if the type attribute requires it.
         if ($this->attributes['type'] === MologConstants::GAUGE_INT_TYPE) {
             return (int)$value;
         }
