@@ -2,8 +2,6 @@
 
 use Dotburo\Molog\Factories\GaugeFactory;
 use Dotburo\Molog\Models\Gauge;
-use Dotburo\Molog\Models\Message;
-use Dotburo\Molog\MologConstants;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
