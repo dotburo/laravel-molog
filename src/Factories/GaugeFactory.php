@@ -22,13 +22,17 @@ class GaugeFactory extends EventFactory
      */
     public function gauge($key, $value = 0, string $unit = ''): GaugeFactory
     {
-        $gauge = $key instanceof Gauge
-            ? $key
-            : new Gauge([
+        $gauge = $key instanceof Gauge ? $key : $this->collection()->firstWhere('key', $key);
+
+        if (!$key instanceof Gauge && $gauge) {
+            $gauge->setValue($value)->setUnit($unit);
+        } else {
+            $gauge = new Gauge([
                 'key' => $key,
                 'value' => $value,
                 'unit' => $unit,
             ]);
+        }
 
         $gauge = $this->setGlobalProperties($gauge);
 
