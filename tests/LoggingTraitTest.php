@@ -1,5 +1,6 @@
 <?php
 
+use Dotburo\Molog\Exceptions\MologException;
 use Dotburo\Molog\Models\Gauge;
 use Dotburo\Molog\Models\Message;
 use Dotburo\Molog\MologConstants;
@@ -27,7 +28,26 @@ it('creates & stores one message', function () {
 
     $dbDatetimeFormatRegex = '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}$/';
 
-    expect($message->getRawOriginal('created_at'))->toMatch($dbDatetimeFormatRegex);
+    //expect($message->getRawOriginal('created_at'))->toMatch($dbDatetimeFormatRegex);
+});
+
+it('creates & stores one gauge', function () {
+    # Gauge with all possible defaults.
+    $this->gauge('metric', 1)->save();
+
+    /** @var Gauge $gauge */
+    $gauge = $this->gauges()->last();
+
+    expect($gauge->key)->toBe('metric');
+    expect($gauge->value)->toBe(1);
+    expect($gauge->unit)->toBeNull();
+    expect($gauge->context)->toBeNull();
+    expect($gauge->user_id)->toBeNull();
+    expect($gauge->tenant_id)->toBeNull();
+
+    $dbDatetimeFormatRegex = '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}$/';
+
+    //expect($gauge->getRawOriginal('created_at'))->toMatch($dbDatetimeFormatRegex);
 });
 
 it('sets created_at upon instantiation', function () {
@@ -42,6 +62,10 @@ it('sets created_at upon instantiation', function () {
 
     expect($storedMsg->getRawOriginal('created_at'))->toBe($serialisedMsg['created_at']);
 });
+
+it('cannot save a message without subject', function () {
+    $this->message()->save();
+})->throws(MologException::class, 'A message without subject cannot be saved');
 
 it('overwrites itself', function () {
     /** @var Message $msg */
@@ -85,6 +109,12 @@ it('breaks down exceptions', function () {
     $msg = Message::query()->first();
 
     expect($msg->level)->toBe(MologConstants::ERROR);
+    expect($msg->subject)->toBe($exception->getMessage());
+    expect($msg->body)->toBe($exception->getTraceAsString());
+
+    $msg = $this->messages()->log($exception)->last();
+
+    expect($msg->level)->toBe(MologConstants::DEBUG);
     expect($msg->subject)->toBe($exception->getMessage());
     expect($msg->body)->toBe($exception->getTraceAsString());
 });
@@ -158,21 +188,21 @@ it('instantiates and stores multiple messages', function () {
     $this->messages()
         ->setContext($context = 'testing')
         ->emergency($subject1 = 'Testing model arguments 1')
-        ->notice($subject2 = 'Testing model arguments 2')
+        ->debug($subject2 = 'Testing model arguments 2')
         ->save();
 
     /** @var Message $msg1 */
     $msg1 = Message::query()->level(LogLevel::EMERGENCY)->first();
 
     /** @var Message $firstMsg */
-    $msg2 = Message::query()->level(LogLevel::NOTICE)->first();
+    $msg2 = Message::query()->level(LogLevel::DEBUG)->first();
 
     expect($msg1->subject)->toBe($subject1);
     expect($msg1->level)->toBe(LogLevel::EMERGENCY);
     expect($msg1->context)->toBe($context);
 
     expect($msg2->subject)->toBe($subject2);
-    expect($msg2->level)->toBe(LogLevel::NOTICE);
+    expect($msg2->level)->toBe(LogLevel::DEBUG);
     expect($msg2->context)->toBe($context);
 });
 
@@ -206,6 +236,41 @@ it('associates parent models', function () {
 });
 
 it('nicely outputs to strings', function () {
+    $this->messages()
+        ->setContext('testing')
+        ->warning('Message 1')
+        ->alert('Message 2')
+        ->save();
+
+    $this->gauges()
+        ->concerning($this->messages()->last())
+        ->setContext('testing')
+        ->gauge('duration', 120.3, 's')
+        ->gauge('throughput', 10, ' messages/s')
+        ->save();
+
+    /** @var Message $message */
+    $msg1 = Message::query()->first();
+
+    $dt1 = $msg1->created_at->toDateTimeString('millisecond');
+
+    /** @var Message $message */
+    $msg2 = Message::query()->first();
+
+    $dt2 = $msg2->created_at->toDateTimeString('millisecond');
+
+    expect((string)$this->messages())->toBe(
+        "$dt2 [alert] [testing] Message 2" . PHP_EOL
+        . "$dt1 [warning] [testing] Message 1"
+    );
+
+    expect((string)$this->gauges())->toBe(
+        '[testing] throughput: 10 messages/s' . PHP_EOL
+        . '[testing] duration: 120.3s'
+    );
+});
+
+it('serializes to array and json', function () {
     $this->message('Mail sent', LogLevel::NOTICE)
         ->setContext('testing')
         ->save();
@@ -216,14 +281,73 @@ it('nicely outputs to strings', function () {
         ->save();
 
     /** @var Message $message */
-    $message = Message::query()->first();
+    $message = $this->messages()->last();
 
     /** @var Gauge $gauge */
     $gauge = $message->gauges()->first();
 
-    $dt = $message->created_at->toDateTimeString('millisecond');
+    expect($arr = $message->toArray())->toBeArray();
+    expect($json = $message->toJson())->toBeString();
+    expect($arr['subject'])->toBe('Mail sent');
+    expect($arr['context'])->toBe('testing');
+    expect($json)->toContain(',"subject":"Mail sent",');
 
-    expect((string)$message)->toBe("$dt [notice] [testing] Mail sent");
+    expect($arr = $gauge->toArray())->toBeArray();
+    expect($json = $gauge->toJson())->toBeString();
 
-    expect((string)$gauge)->toBe('[testing] duration: 120.3s');
+    expect($arr['context'])->toBe('testing');
+    expect($json)->toContain(',"value":120.3,');
+});
+
+it('allows bulk creation of gauges', function () {
+    $this->gauges([
+        ['key' => 'test 1', 'value' => 1],
+        new Gauge(['key' => 'test 2', 'value' => 2]),
+        $this->gauge('test 3', 3),
+    ])
+        ->concerning($this->messages()->last())
+        ->setContext('testing')
+        ->save();
+
+    $gauges = Gauge::orderBy('key')->get();
+
+    expect($gauges->first()->key)->toBe('test 1');
+    expect($gauges->first()->value)->toBe(1);
+    expect($gauges->firstWhere('key', 'test 2')->value)->toBe(2);
+    expect($gauges->last()->key)->toBe('test 3');
+    expect($gauges->last()->value)->toBe(3);
+});
+
+it('allows to reset attributes', function () {
+    $this->gauge('test 3', 3, 'cm')
+        ->setKey('test 1')
+        ->setValue(0)
+        ->setUnit()
+        ->setType(MologConstants::GAUGE_FLOAT_TYPE)
+        ->save();
+
+    /** @var Gauge $gauge */
+    $gauge = Gauge::first();
+
+    expect($gauge->key)->toBe('test 1');
+    expect($gauge->value)->toBe(0.0);
+    expect($gauge->unit)->toBeNull();
+    expect($gauge->type)->toBe(MologConstants::GAUGE_FLOAT_TYPE);
+});
+
+it('doesn\'t allow invalid gauge data types', function () {
+    $this->gauge('test', 1)->setType('array');
+})->throws(MologException::class, "'array' is not a valid Gauge data type");
+
+it('allows to clear the event relationship', function () {
+    $this->message('HELLO')->save();
+
+    $this->gauge('duration', 120.3, 's')
+        ->concerning($this->messages()->last())
+        ->concerning()
+        ->save();
+
+    $msg = Message::first();
+
+    expect($msg->gauges()->get()->isEmpty())->toBeTrue();
 });

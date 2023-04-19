@@ -2,7 +2,6 @@
 
 namespace Dotburo\Molog\Models;
 
-use Carbon\Carbon;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Dotburo\Molog\Contracts\EventInterface;
@@ -17,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $user_id
  * @property int $tenant_id
  * @property string $context
- * @property Carbon $created_at
+ * @property DateTimeInterface $created_at
  *
  * @copyright 2021 dotburo
  * @author dotburo <code@dotburo.org>
@@ -55,12 +54,6 @@ abstract class Event extends Model implements EventInterface
         $attributes[$this->getCreatedAtColumn()] = new DateTimeImmutable();
 
         parent::__construct($attributes);
-    }
-
-    /** @inheritdoc */
-    protected function serializeDate(DateTimeInterface $date): string
-    {
-        return $date->format(MologConstants::CREATED_AT_FORMAT);
     }
 
     /** @inheritdoc */

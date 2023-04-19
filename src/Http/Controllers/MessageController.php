@@ -26,9 +26,9 @@ class MessageController extends BaseController
             $query->whereIn('level', (array)Message::levelCode($levels));
         }
 
-        $orderBy = $request->get('order_by', 'created_at');
+        $orderBy = $request->get('order_by') ?: 'created_at';
 
-        $direction = $request->get('order', 'desc');
+        $direction = $request->get('order') ?: 'desc';
 
         $perPage = $request->get('per_page', config('molog.per_page'));
 

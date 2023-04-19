@@ -148,7 +148,7 @@ class Gauge extends Event
      */
     protected function setUnitAttribute(string $unit = ''): Gauge
     {
-        $this->attributes['unit'] = $unit ?: null;
+        $this->attributes['unit'] = rtrim($unit) ?: null;
 
         return $this;
     }

@@ -2,8 +2,8 @@
 
 namespace Dotburo\Molog\Factories;
 
+use Dotburo\Molog\Exceptions\MologException;
 use Dotburo\Molog\Models\Gauge;
-use Illuminate\Support\Collection;
 
 /**
  * Gauge factory class.
@@ -22,7 +22,7 @@ class GaugeFactory extends EventFactory
      */
     public function gauge($key, $value = 0, string $unit = ''): GaugeFactory
     {
-        $gauge = $key instanceof Gauge ? $key : $this->collection()->firstWhere('key', $key);
+        $gauge = $key instanceof Gauge ? $key : $this->items->firstWhere('key', $key);
 
         if (!$key instanceof Gauge && $gauge) {
             $gauge->setValue($value)->setUnit($unit);
@@ -64,7 +64,7 @@ class GaugeFactory extends EventFactory
      */
     public function increment(string $key, $value = 1, string $unit = ''): GaugeFactory
     {
-        if ($gauge = $this->getGaugesByKey($key)->first()) {
+        if ($gauge = $this->items->firstWhere('key', $key)) {
             /** @var Gauge $gauge */
             $gauge->setValue($gauge->value + $value);
 
@@ -83,25 +83,14 @@ class GaugeFactory extends EventFactory
      */
     public function decrement(string $key, $value = 1, string $unit = ''): GaugeFactory
     {
-        if ($gauge = $this->getGaugesByKey($key)->first()) {
+        if ($gauge = $this->items->firstWhere('key', $key)) {
             /** @var Gauge $gauge */
             $gauge->setValue($gauge->value - $value);
 
             return $this;
         }
 
-        return $this->gauge($key, $value, $unit);
-    }
-
-    /**
-     * @param string $key
-     * @return Collection
-     */
-    protected function getGaugesByKey(string $key): Collection
-    {
-        return $this->items->filter(function (Gauge $gauge) use ($key) {
-            return $gauge->key === $key;
-        });
+        return $this->gauge($key, -1, $unit);
     }
 
     /**
@@ -118,14 +107,15 @@ class GaugeFactory extends EventFactory
      * Calculate the time difference with a previously set gauge with the same key.
      * @param string $key
      * @return $this
+     * @throws MologException
      */
     public function stopTimer(string $key = 'duration'): GaugeFactory
     {
-        if (! ($gauge = $this->items->where('key', $key)->first())) {
-            return $this;
+        if (! ($gauge = $this->items->firstWhere('key', $key))) {
+            throw new MologException("The timer '$key' has not been started yet");
         }
 
-        $gauge->setValueAttribute(microtime(true) - $gauge->value);
+        $gauge->setValue(microtime(true) - $gauge->value);
 
         return $this;
     }
