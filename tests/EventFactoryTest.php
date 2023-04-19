@@ -2,7 +2,6 @@
 
 use Dotburo\Molog\Exceptions\MologException;
 use Dotburo\Molog\Factories\GaugeFactory;
-use Dotburo\Molog\Models\Gauge;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 

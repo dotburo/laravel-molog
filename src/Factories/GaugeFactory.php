@@ -24,7 +24,7 @@ class GaugeFactory extends EventFactory
     {
         $gauge = $key instanceof Gauge ? $key : $this->items->firstWhere('key', $key);
 
-        if (!$key instanceof Gauge && $gauge) {
+        if (! $key instanceof Gauge && $gauge) {
             $gauge->setValue($value)->setUnit($unit);
         } else {
             $gauge = new Gauge([
