@@ -100,7 +100,9 @@ class Gauge extends Event
 
         $round = app('config')->get('molog.gauge_float_round') ?? MologConstants::GAUGE_DEFAULT_ROUNDING;
 
-        return $round > -1 ? round($value, (int)$round) : $value;
+        # Some versions of the PDO driver seem to return floats as strings,
+        # so we type cast `$value` when it's not rounded.
+        return $round > -1 ? round($value, (int)$round) : (float)$value;
     }
 
     /**
