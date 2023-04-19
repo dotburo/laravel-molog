@@ -235,34 +235,33 @@ it('associates parent models', function () {
     expect($gauge->unit)->toBe('s');
 });
 
-it('nicely outputs to strings', function () {
+it('nicely outputs messages to strings', function () {
     $this->messages()
         ->setContext('testing')
         ->warning('Message 1')
         ->alert('Message 2')
         ->save();
 
+    /** @var Message $message */
+    $messages = Message::query()->get();
+
+    $dt1 = $messages->firstWhere('subject', 'Message 1')->created_at->toDateTimeString('millisecond');
+
+    $dt2 = $messages->firstWhere('subject', 'Message 2')->created_at->toDateTimeString('millisecond');
+
+    expect((string)$this->messages())->toBe(
+        "$dt2 [alert] [testing] Message 2" . PHP_EOL
+        . "$dt1 [warning] [testing] Message 1"
+    );
+});
+
+it('nicely outputs gauges to strings', function () {
     $this->gauges()
         ->concerning($this->messages()->last())
         ->setContext('testing')
         ->gauge('duration', 120.3, 's')
         ->gauge('throughput', 10, ' messages/s')
         ->save();
-
-    /** @var Message $message */
-    $msg1 = Message::query()->first();
-
-    $dt1 = $msg1->created_at->toDateTimeString('millisecond');
-
-    /** @var Message $message */
-    $msg2 = Message::query()->first();
-
-    $dt2 = $msg2->created_at->toDateTimeString('millisecond');
-
-    expect((string)$this->messages())->toBe(
-        "$dt2 [alert] [testing] Message 2" . PHP_EOL
-        . "$dt1 [warning] [testing] Message 1"
-    );
 
     expect((string)$this->gauges())->toBe(
         '[testing] throughput: 10 messages/s' . PHP_EOL
