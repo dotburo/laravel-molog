@@ -2,8 +2,8 @@
 
 namespace Dotburo\Molog\Models;
 
+use Carbon\Carbon;
 use DateTimeImmutable;
-use DateTimeInterface;
 use Dotburo\Molog\Contracts\EventInterface;
 use Dotburo\Molog\MologConstants;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $user_id
  * @property int $tenant_id
  * @property string $context
- * @property DateTimeInterface $created_at
+ * @property Carbon $created_at
  *
  * @copyright 2021 dotburo
  * @author dotburo <code@dotburo.org>
