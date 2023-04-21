@@ -6,7 +6,8 @@
 
 Laravel Molog enables you to log messages and store metrics that are related to specific models. Akin to Spatie's 
 [Activity Log](https://github.com/spatie/laravel-activitylog), but slightly more generic and with the possibility to
-associate metrics (Gauges) to messages or to any other Laravel model.
+associate metrics (Gauges) to messages or to any other Laravel model. The gauges factory class also provides builtin timer 
+and incrementation methods.
 
 In its simplest form:
 ```php
@@ -15,7 +16,7 @@ $user = auth()->user();
 $this->message('Mail sent!')->concerning($user)->save();
 ```
 
-A slightly more advanced example - a message with metrics for a custom model:
+A slightly more advanced example &mdash; a message with metrics for a custom model:
 ```php
 $model = new Model();
 
@@ -37,13 +38,22 @@ Good old exception logging:
 ```php
 $msg = $this->message(new Exception('Oops'))->setContext('example');
 
-echo $msg;          // 2023-04-10 17:34:22.348 [debug] [example] Oops
-echo $msg->body;    // Stack trace ...
+echo $msg;              // 2023-04-10 17:34:22.348 [debug] [example] Oops
+echo $msg->subject;     // Oops
+echo $msg->body;        // Stack trace ...
 ```
 
+## Features
+- Attach log messages and metrics (gauges) to models
+- Follows the PSR-3: Logger Interface
+- Exception logging
+- Start & stop timer metrics
+- Increment and decrement methods for gauges
+- Output messages and metrics to string
+- Generic HTTP controller
 
 ## Usage
-Install with composer:
+Install with composer from [packagist.org](https://packagist.org/packages/dotburo/laravel-molog):
 ```bash
 composer require dotburo/laravel-molog
 ```
@@ -55,7 +65,7 @@ php artisan vendor:publish --provider="Dotburo\Molog\MologServiceProvider"
 php artisan migrate
 ```
 
-Wherever you need logging, use the `Logging` trait:
+Wherever you need logging, use the `Logging` trait. See the documentation for more [usage examples](./doc/Examples.md).
 ```php
 class YourClass {
 
@@ -93,10 +103,6 @@ class YourClass {
     }
 }
 ```
-
-
-## Documentation
-Coming soon
 
 
 ## Testing
