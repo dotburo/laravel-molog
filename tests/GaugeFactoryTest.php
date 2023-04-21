@@ -53,12 +53,11 @@ it('creates and updates gauge attributes', function () {
 
     $gaugeFactory->gauge('pressure', 2.35, 'bar');
 
-    $gaugeFactory->setTenant(7);
     $gaugeFactory->setContext('Import process');
 
     $gaugeFactory->gauge('density', 5.43);
 
-    $gaugeFactory->last()->setValue(5);
+    $gaugeFactory->last()->setValue(5)->setTenant(7)->setContext();
 
     expect($gaugeFactory->count())->toBe(2);
     expect($gaugeFactory->last()->key)->toBe('density');
@@ -75,10 +74,10 @@ it('creates and updates gauge attributes', function () {
     expect($gaugeFactory->first()->tenant_id)->toBe(5);
     expect($gaugeFactory->last()->tenant_id)->toBe(7);
 
-    expect($gaugeFactory->first()->context)->toBeNull();
-    expect($gaugeFactory->last()->context)->toBe('Import process');
+    expect($gaugeFactory->last()->context)->toBeNull();
+    expect($gaugeFactory->first()->context)->toBe('Import process');
 
     expect($gaugeFactory->count())->toBe(2);
 
-    expect((string)$gaugeFactory)->toBe("[Import process] density: 3.35" . PHP_EOL . "pressure: 2.35bar");
+    expect((string)$gaugeFactory)->toBe("density: 3.35" . PHP_EOL . "[Import process] pressure: 2.35bar");
 });

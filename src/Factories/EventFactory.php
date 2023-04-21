@@ -83,17 +83,13 @@ abstract class EventFactory implements EventInterface, Stringable
     /** @inheritdoc */
     public function concerning(?Model $model = null): self
     {
-        $this->relation = $model;
-
-        return $this;
+        return $this->updateEvents('concerning', $this->relation = $model);
     }
 
     /** @inheritdoc */
     public function setContext(string $label = ''): self
     {
-        $this->context = $label ?: null;
-
-        return $this;
+        return $this->updateEvents('setContext', $this->context = $label ?: null);
     }
 
     /** @inheritdoc */
@@ -103,9 +99,7 @@ abstract class EventFactory implements EventInterface, Stringable
             $tenant = $tenant->getKey();
         }
 
-        $this->tenant_id = $tenant ?: null;
-
-        return $this;
+        return $this->updateEvents('setTenant', $this->tenant_id = $tenant ?: null);
     }
 
     /** @inheritdoc */
@@ -115,7 +109,14 @@ abstract class EventFactory implements EventInterface, Stringable
             $user = $user->getKey();
         }
 
-        $this->user_id = $user ?: null;
+        return $this->updateEvents('setUser', $this->user_id = $user ?: null);
+    }
+
+    protected function updateEvents(string $method, $value = null): self
+    {
+        $this->items->each(function (Event $event) use ($method, $value) {
+            $event->$method($value);
+        });
 
         return $this;
     }

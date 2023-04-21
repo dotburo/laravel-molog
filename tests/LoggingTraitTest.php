@@ -186,9 +186,9 @@ it('allows models in user and tenant setters', function () {
 
 it('instantiates and stores multiple messages', function () {
     $this->messages()
-        ->setContext($context = 'testing')
         ->emergency($subject1 = 'Testing model arguments 1')
         ->debug($subject2 = 'Testing model arguments 2')
+        ->setContext($context = 'testing')
         ->save();
 
     /** @var Message $msg1 */
