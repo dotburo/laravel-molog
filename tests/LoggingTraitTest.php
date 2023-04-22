@@ -300,7 +300,7 @@ it('serializes to array and json', function () {
 
 it('allows bulk creation of gauges', function () {
     $this->gauges([
-        ['key' => 'test 1', 'value' => 1],
+        ['key' => 'test 1', 'value' => 1.2345678],
         new Gauge(['key' => 'test 2', 'value' => 2]),
         $this->gauge('test 3', 3),
     ])
@@ -311,7 +311,7 @@ it('allows bulk creation of gauges', function () {
     $gauges = Gauge::orderBy('key')->get();
 
     expect($gauges->first()->key)->toBe('test 1');
-    expect($gauges->first()->value)->toBe(1);
+    expect($gauges->first()->value)->toBe(1.2345678);
     expect($gauges->firstWhere('key', 'test 2')->value)->toBe(2);
     expect($gauges->last()->key)->toBe('test 3');
     expect($gauges->last()->value)->toBe(3);
