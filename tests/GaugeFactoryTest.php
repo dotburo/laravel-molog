@@ -16,8 +16,8 @@ it('starts and stops timers', function () {
     $factory->startTimer('time');
     $factory->stopTimer('time');
 
-    expect($factory->firstWhere('key', 'duration')->value)->toBeFloat();
-    expect($factory->firstWhere('key', 'time')->value)->toBeFloat();
+    expect($factory->get('duration')->value)->toBeFloat();
+    expect($factory->get('time')->value)->toBeFloat();
 });
 
 it('cannot stop non-existent timer', function () {
