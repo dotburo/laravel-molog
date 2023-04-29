@@ -243,7 +243,7 @@ it('nicely outputs messages to strings', function () {
         ->save();
 
     /** @var Message $message */
-    $messages = Message::query()->get();
+    $messages = Message::query()->get()->keyBy('subject');
 
     $dt1 = $messages->get('Message 1')->created_at->toDateTimeString('millisecond');
 
@@ -308,7 +308,7 @@ it('allows bulk creation of gauges', function () {
         ->setContext('testing')
         ->save();
 
-    $gauges = Gauge::orderBy('key')->get();
+    $gauges = Gauge::orderBy('key')->get()->keyBy('key');
 
     expect($gauges->first()->key)->toBe('test 1');
     expect($gauges->first()->value)->toBe(1.2345678);

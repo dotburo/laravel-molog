@@ -156,12 +156,6 @@ class Gauge extends Event
         return $this;
     }
 
-    /** @inheritdoc  */
-    public function newCollection(array $models = [])
-    {
-        return (new Collection($models))->keyBy('key');
-    }
-
     /**
      * Override Laravel's method to construct a standard log line.
      * @return string

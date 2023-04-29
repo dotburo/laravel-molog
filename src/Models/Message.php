@@ -215,12 +215,6 @@ class Message extends Event implements LoggerInterface
         return $this;
     }
 
-    /** @inheritdoc  */
-    public function newCollection(array $models = [])
-    {
-        return (new Collection($models))->keyBy('subject');
-    }
-
     /**
      * Override Laravel's method to construct a standard log line.
      * @return string

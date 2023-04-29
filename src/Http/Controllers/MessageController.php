@@ -34,6 +34,7 @@ class MessageController extends BaseController
 
         return $query
             ->orderBy($orderBy, $direction)
-            ->paginate($perPage);
+            ->paginate($perPage)
+            ->key;
     }
 }
