@@ -4,7 +4,6 @@ namespace Dotburo\Molog\Models;
 
 use Dotburo\Molog\Exceptions\MologException;
 use Dotburo\Molog\MologConstants;
-use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Model for logged gauges.

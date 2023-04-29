@@ -7,7 +7,6 @@ use Dotburo\Molog\Exceptions\MologException;
 use Dotburo\Molog\MologConstants;
 use Dotburo\Molog\Traits\LoggerMethods;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Throwable;
 
