@@ -7,6 +7,7 @@ use Dotburo\Molog\Exceptions\MologException;
 use Dotburo\Molog\MologConstants;
 use Dotburo\Molog\Traits\LoggerMethods;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Throwable;
 
@@ -212,6 +213,12 @@ class Message extends Event implements LoggerInterface
         $this->attributes['body'] = trim($body) ?: null;
 
         return $this;
+    }
+
+    /** @inheritdoc  */
+    public function newCollection(array $models = [])
+    {
+        return (new Collection($models))->keyBy('subject');
     }
 
     /**

@@ -44,7 +44,7 @@ class MessageFactory extends EventFactory implements LoggerInterface
 
         $this->setGlobalProperties($message);
 
-        $this->items->push($message);
+        $this->items->offsetSet($message->key, $message);
 
         return $this;
     }

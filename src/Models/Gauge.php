@@ -4,6 +4,7 @@ namespace Dotburo\Molog\Models;
 
 use Dotburo\Molog\Exceptions\MologException;
 use Dotburo\Molog\MologConstants;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Model for logged gauges.
@@ -153,6 +154,12 @@ class Gauge extends Event
         $this->attributes['unit'] = rtrim($unit) ?: null;
 
         return $this;
+    }
+
+    /** @inheritdoc  */
+    public function newCollection(array $models = [])
+    {
+        return (new Collection($models))->keyBy('key');
     }
 
     /**

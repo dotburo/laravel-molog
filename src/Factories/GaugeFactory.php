@@ -22,7 +22,7 @@ class GaugeFactory extends EventFactory
      */
     public function gauge($key, $value = 0, string $unit = ''): GaugeFactory
     {
-        $gauge = $key instanceof Gauge ? $key : $this->items->firstWhere('key', $key);
+        $gauge = $key instanceof Gauge ? $key : $this->items->get($key);
 
         if (! $key instanceof Gauge && $gauge) {
             $gauge->setValue($value)->setUnit($unit);
@@ -36,7 +36,7 @@ class GaugeFactory extends EventFactory
 
         $gauge = $this->setGlobalProperties($gauge);
 
-        $this->items->push($gauge);
+        $this->items->offsetSet($gauge->key, $gauge);
 
         return $this;
     }
@@ -64,7 +64,7 @@ class GaugeFactory extends EventFactory
      */
     public function increment(string $key, $value = 1, string $unit = ''): GaugeFactory
     {
-        if ($gauge = $this->items->firstWhere('key', $key)) {
+        if ($gauge = $this->items[$key] ?? null) {
             /** @var Gauge $gauge */
             $gauge->setValue($gauge->value + $value);
 
@@ -83,7 +83,7 @@ class GaugeFactory extends EventFactory
      */
     public function decrement(string $key, $value = 1, string $unit = ''): GaugeFactory
     {
-        if ($gauge = $this->items->firstWhere('key', $key)) {
+        if ($gauge = $this->items[$key] ?? null) {
             /** @var Gauge $gauge */
             $gauge->setValue($gauge->value - $value);
 
@@ -111,12 +111,25 @@ class GaugeFactory extends EventFactory
      */
     public function stopTimer(string $key = 'duration'): GaugeFactory
     {
-        if (! ($gauge = $this->items->firstWhere('key', $key))) {
+        $gauge = $this->items[$key] ?? null;
+
+        if (! $gauge) {
             throw new MologException("The timer '$key' has not been started yet");
         }
 
         $gauge->setValue(microtime(true) - $gauge->value);
 
         return $this;
+    }
+
+    public function percentage(string $key, $divided, $divider): GaugeFactory
+    {
+        $divider = isset($this->items[$divider]) ? $this->items[$divider]->value : 0;
+
+        $divided = isset($this->items[$divided]) ? $this->items[$divided]->value : 0;
+
+        $percentage = $divider ? ($divided / $divider) : 0;
+
+        return $this->gauge($key, $percentage, '%');
     }
 }

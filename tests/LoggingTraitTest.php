@@ -245,9 +245,9 @@ it('nicely outputs messages to strings', function () {
     /** @var Message $message */
     $messages = Message::query()->get();
 
-    $dt1 = $messages->firstWhere('subject', 'Message 1')->created_at->toDateTimeString('millisecond');
+    $dt1 = $messages->get('Message 1')->created_at->toDateTimeString('millisecond');
 
-    $dt2 = $messages->firstWhere('subject', 'Message 2')->created_at->toDateTimeString('millisecond');
+    $dt2 = $messages->get('Message 2')->created_at->toDateTimeString('millisecond');
 
     expect((string)$this->messages())->toBe(
         "$dt2 [alert] [testing] Message 2" . PHP_EOL
@@ -300,7 +300,7 @@ it('serializes to array and json', function () {
 
 it('allows bulk creation of gauges', function () {
     $this->gauges([
-        ['key' => 'test 1', 'value' => 1],
+        ['key' => 'test 1', 'value' => 1.2345678],
         new Gauge(['key' => 'test 2', 'value' => 2]),
         $this->gauge('test 3', 3),
     ])
@@ -311,8 +311,8 @@ it('allows bulk creation of gauges', function () {
     $gauges = Gauge::orderBy('key')->get();
 
     expect($gauges->first()->key)->toBe('test 1');
-    expect($gauges->first()->value)->toBe(1);
-    expect($gauges->firstWhere('key', 'test 2')->value)->toBe(2);
+    expect($gauges->first()->value)->toBe(1.2345678);
+    expect($gauges->get('test 2')->value)->toBe(2);
     expect($gauges->last()->key)->toBe('test 3');
     expect($gauges->last()->value)->toBe(3);
 });
@@ -349,4 +349,13 @@ it('allows to clear the event relationship', function () {
     $msg = Message::first();
 
     expect($msg->gauges()->get()->isEmpty())->toBeTrue();
+});
+
+it('calculates percentages', function () {
+    $this->gauges()
+        ->gauge('divided', 33)
+        ->gauge('divider', 100)
+        ->percentage('percentage', 'divided', 'divider');
+
+    expect($this->gauges()->get('percentage')->value)->toBe(0.33);
 });
