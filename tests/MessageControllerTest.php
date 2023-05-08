@@ -1,14 +1,8 @@
 <?php
 
-use Dotburo\Molog\Exceptions\MologException;
-use Dotburo\Molog\Models\Gauge;
-use Dotburo\Molog\Models\Message;
-use Dotburo\Molog\MologConstants;
 use Dotburo\Molog\Traits\Logging;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
-use Psr\Log\LogLevel;
 
 uses(RefreshDatabase::class);
 uses(Logging::class);

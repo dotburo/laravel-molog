@@ -65,7 +65,7 @@ abstract class Event extends Model implements EventInterface
             return $this;
         }
 
-        if (!$model->exists) {
+        if (! $model->exists) {
             $model->save();
         }
 
