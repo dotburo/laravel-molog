@@ -34,7 +34,7 @@ class CreateMologTables extends Migration
             $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->unsignedBigInteger('tenant_id')->nullable()->index();
 
-            $table->timestamp('created_at', 6)->nullable();
+            $table->timestamp('created_at', 6);
         });
 
         # Metrics table.
@@ -54,7 +54,7 @@ class CreateMologTables extends Migration
             $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->unsignedBigInteger('tenant_id')->nullable()->index();
 
-            $table->timestamp('created_at', 6)->nullable();
+            $table->timestamp('created_at', 6);
         });
     }
 
