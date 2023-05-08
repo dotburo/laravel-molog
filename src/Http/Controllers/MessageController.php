@@ -30,11 +30,10 @@ class MessageController extends BaseController
 
         $direction = $request->get('order') ?: 'desc';
 
-        $perPage = $request->get('per_page', config('molog.per_page'));
+        $perPage = (int)$request->get('per_page', config('molog.per_page'));
 
         return $query
             ->orderBy($orderBy, $direction)
-            ->paginate($perPage)
-            ->key;
+            ->paginate($perPage);
     }
 }
