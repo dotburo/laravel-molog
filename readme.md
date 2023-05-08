@@ -6,8 +6,8 @@
 
 Laravel Molog enables you to log messages and store metrics that are related to specific models. Akin to Spatie's 
 [Activity Log](https://github.com/spatie/laravel-activitylog), but slightly more generic and with the possibility to
-associate metrics (Gauges) to messages or to any other Laravel model. The gauges factory class also provides builtin timer 
-and incrementation methods.
+associate metrics (Gauges) to messages or to any other Laravel model. The gauges factory class also provides builtin timer, 
+incrementation and percentage methods.
 
 In its simplest form:
 ```php
@@ -27,7 +27,7 @@ $this->message()->notice('Import started...')->concerning($model)->save();
 // processing...
 
 $this->gauges()
-    ->concerning($this->messageFactory()->last())
+    ->concerning($this->messages()->last())
     ->gauge('Files accepted', 16)
     ->gauge('Files refused', 2)
     ->stopTimer()
