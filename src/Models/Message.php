@@ -67,7 +67,7 @@ class Message extends Event implements LoggerInterface
      */
     public function gauges(): MorphMany
     {
-        return $this->morphMany(Gauge::class, 'loggable');
+        return $this->morphMany(Gauge::class, 'loggable')->orderBy('key');
     }
 
     /**
