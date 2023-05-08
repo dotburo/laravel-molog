@@ -26,9 +26,9 @@ it('creates & stores one message', function () {
     expect($message->user_id)->toBeNull();
     expect($message->tenant_id)->toBeNull();
 
-    $dbDatetimeFormatRegex = '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}$/';
+    $dbDatetimeFormatRegex = '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}$/';
 
-    //expect($message->getRawOriginal('created_at'))->toMatch($dbDatetimeFormatRegex);
+    expect($message->getRawOriginal('created_at'))->toMatch($dbDatetimeFormatRegex);
 });
 
 it('creates & stores one gauge', function () {
@@ -45,22 +45,22 @@ it('creates & stores one gauge', function () {
     expect($gauge->user_id)->toBeNull();
     expect($gauge->tenant_id)->toBeNull();
 
-    $dbDatetimeFormatRegex = '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}$/';
+    $dbDatetimeFormatRegex = '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}$/';
 
-    //expect($gauge->getRawOriginal('created_at'))->toMatch($dbDatetimeFormatRegex);
+    expect($gauge->getRawOriginal('created_at'))->toMatch($dbDatetimeFormatRegex);
 });
 
 it('sets created_at upon instantiation', function () {
     $msg = $this->message()->log('HELLO');
 
-    $serialisedMsg = $msg->toArray();
+    $beforeSave = $msg->created_at->format(MologConstants::CREATED_AT_FORMAT);
 
     $msg->save();
 
     /** @var Message $storedMsg */
     $storedMsg = Message::query()->first();
 
-    expect($storedMsg->getRawOriginal('created_at'))->toBe($serialisedMsg['created_at']);
+    expect($storedMsg->getRawOriginal('created_at'))->toBe($beforeSave);
 });
 
 it('cannot save a message without subject', function () {

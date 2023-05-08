@@ -13,7 +13,7 @@ use Psr\Log\LogLevel;
 final class MologConstants extends LogLevel
 {
     /** @var string */
-    public const CREATED_AT_FORMAT = 'Y-m-d\TH:i:s.u\Z';
+    public const CREATED_AT_FORMAT = 'Y-m-d H:i:s.u';
 
     /** @var int[] */
     public const LEVEL_CODES = [
