@@ -65,6 +65,10 @@ abstract class Event extends Model implements EventInterface
             return $this;
         }
 
+        if (!$model->exists) {
+            $model->save();
+        }
+
         $this->loggable()->associate($model);
 
         return $this;

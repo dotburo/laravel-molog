@@ -207,11 +207,11 @@ it('instantiates and stores multiple messages', function () {
 });
 
 it('associates parent models', function () {
-    $user = new User();
-    $user->id = 123;
+    $parent = new Gauge();
+    $parent->key = 'Parent gauge';
 
     $this->message('Sending email...', $level = LogLevel::INFO)
-        ->concerning($user)
+        ->concerning($parent)
         ->save();
 
     $this->gauge('duration', 120, 's', 'int')
@@ -225,9 +225,9 @@ it('associates parent models', function () {
     $gauge = $message->gauges()->first();
 
     expect($message->level)->toBe($level);
-    expect($message->loggable_type)->toBe('Illuminate\Foundation\Auth\User');
+    expect($message->loggable_type)->toBe('Dotburo\Molog\Models\Gauge');
     // the following is manually type-casted because it gives different data types in different Laravel versions
-    expect((int)$message->loggable_id)->toBe($user->id);
+    expect((int)$message->loggable_id)->toBe($parent->id);
 
     expect($gauge->key)->toBe('duration');
     expect($gauge->value)->toBe(120);
