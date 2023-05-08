@@ -101,7 +101,7 @@ class CreateMologTables extends Migration
 
         switch ($primaryKeyType) {
             case 'uuid';
-                $table->string("{$name}_id")->nullable()->index();
+                $table->uuid("{$name}_id")->nullable()->index();
                 break;
             default:
                 $table->unsignedBigInteger("{$name}_id")->nullable();
