@@ -357,5 +357,5 @@ it('calculates percentages', function () {
         ->gauge('divider', 100)
         ->percentage('percentage', 'divided', 'divider');
 
-    expect($this->gauges()->get('percentage')->value)->toBe(0.33);
+    expect($this->gauges()->get('percentage')->value)->toBe(33.0);
 });
