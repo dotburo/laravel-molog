@@ -130,6 +130,6 @@ class GaugeFactory extends EventFactory
 
         $percentage = $divider ? ($divided / $divider) : 0;
 
-        return $this->gauge($key, $percentage, '%');
+        return $this->gauge($key, $percentage * 100, '%');
     }
 }
