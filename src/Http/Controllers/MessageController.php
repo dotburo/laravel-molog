@@ -26,6 +26,12 @@ class MessageController extends BaseController
             $query->whereIn('level', (array)Message::levelCode($levels));
         }
 
+        if ($contexts = $request->get('contexts')) {
+            $contexts = array_filter(array_map('trim', explode(',', $contexts)));
+
+            $query->whereIn('context', $contexts);
+        }
+
         $orderBy = $request->get('order_by') ?: 'created_at';
 
         $direction = $request->get('order') ?: 'desc';
