@@ -28,7 +28,7 @@ class CreateMologTables extends Migration
 
             $table->unsignedTinyInteger('level')->default($debugLevelCode)->index();
 
-            $table->string('subject');
+            $table->string('subject', MologConstants::MSG_SUBJECT_MAX_LEN);
             $table->longText('body')->nullable();
 
             $table->unsignedBigInteger('user_id')->nullable()->index();

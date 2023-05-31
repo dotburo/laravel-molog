@@ -187,7 +187,13 @@ class Message extends Event implements LoggerInterface
      */
     protected function setSubjectAttribute(string $subject): Message
     {
-        $this->attributes['subject'] = trim($subject);
+        $subject = trim($subject);
+
+        $subject = (strlen($subject) <= MologConstants::MSG_SUBJECT_MAX_LEN)
+            ? $subject
+            : (substr($subject, MologConstants::MSG_SUBJECT_MAX_LEN - 3) . '...');
+
+        $this->attributes['subject'] = $subject;
 
         return $this;
     }

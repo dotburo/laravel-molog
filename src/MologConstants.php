@@ -30,6 +30,9 @@ final class MologConstants extends LogLevel
     /** @var string */
     public const MSG_DEFAULT_LEVEL = parent::DEBUG;
 
+    /** @var int */
+    public const MSG_SUBJECT_MAX_LEN = 255;
+
     /** @var string */
     public const GAUGE_INT_TYPE = 'int';
 
