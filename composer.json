@@ -1,7 +1,7 @@
 {
     "name": "dotburo/laravel-molog",
     "description": "Laravel tool to log model-specific messages and metrics",
-    "version": "1.5.1",
+    "version": "1.5.2",
     "keywords": [
         "dotburo",
         "laravel",
