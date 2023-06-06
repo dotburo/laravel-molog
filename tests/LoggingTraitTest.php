@@ -119,6 +119,23 @@ it('breaks down exceptions', function () {
     expect($msg->body)->toBe($exception->getTraceAsString());
 });
 
+it('allows to edit exception messages and trims subject length', function () {
+    $exception = new Exception('Something went wrong' . str_repeat('x', 255));
+
+    $this->message()
+        ->error($exception)
+        ->setSubject($subject = 'Edited exception message: ' . $exception->getMessage())
+        ->save();
+
+    /** @var Message $msg */
+    $msg = Message::query()->first();
+
+    expect($msg->level)->toBe(MologConstants::ERROR);
+    expect(strlen($msg->subject))->toBe(255);
+    expect($msg->subject)->toBe(substr($subject, 0, 252) . '...');
+    expect($msg->body)->toBe($exception->getTraceAsString());
+});
+
 it('sets & stores all attributes through setter methods', function () {
     $this->message()
         ->setSubject($subject = 'Testing attribute setters')
