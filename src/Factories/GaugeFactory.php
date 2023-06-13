@@ -153,13 +153,14 @@ class GaugeFactory extends EventFactory
     {
         $seconds = $this->items->get($timer)->value;
 
-        if (!$seconds) {
+        if (! $seconds) {
             return $this->gauge($key, 0, "$type/$time");
         }
 
         switch ($time) {
             case 'sec':
                 $timeMultiplier = 1;
+
                 break;
             default:
                 $timeMultiplier = 60;
