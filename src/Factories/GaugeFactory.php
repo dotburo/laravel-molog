@@ -122,7 +122,14 @@ class GaugeFactory extends EventFactory
         return $this;
     }
 
-    public function percentage(string $key, $divided, $divider): GaugeFactory
+    /**
+     * Calculate percentage.
+     * @param string $key
+     * @param string $divided
+     * @param string $divider
+     * @return $this
+     */
+    public function percentage(string $key, string $divided, string $divider): GaugeFactory
     {
         $divider = isset($this->items[$divider]) ? $this->items[$divider]->value : 0;
 
@@ -131,5 +138,35 @@ class GaugeFactory extends EventFactory
         $percentage = $divider ? ($divided / $divider) : 0;
 
         return $this->gauge($key, $percentage * 100, '%');
+    }
+
+    /**
+     * Calculate throughput.
+     * @param int $count
+     * @param string $timer
+     * @param string $type
+     * @param string $time
+     * @param string $key
+     * @return $this
+     */
+    public function throughput(int $count, string $timer, string $type = 'items', string $time = 'min', string $key = 'throughput'): GaugeFactory
+    {
+        $seconds = $this->items->get($timer)->value;
+
+        if (!$seconds) {
+            return $this->gauge($key, 0, "$type/$time");
+        }
+
+        switch ($time) {
+            case 'sec':
+                $timeMultiplier = 1;
+                break;
+            default:
+                $timeMultiplier = 60;
+        }
+
+        $result = $timeMultiplier * $count / $seconds;
+
+        return $this->gauge($key, $result, "$type/$time");
     }
 }

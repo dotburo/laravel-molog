@@ -376,3 +376,21 @@ it('calculates percentages', function () {
 
     expect($this->gauges()->get('percentage')->value)->toBe(33.0);
 });
+
+it('calculates throughput', function () {
+    $this->gauges()->startTimer();
+
+    sleep(5);
+
+    $this->gauges()->stopTimer();
+
+    $this->gauges()
+        ->throughput(20, 'duration')
+        ->throughput(20, 'duration', 'lists', 'sec', 'throughput 2');
+
+    expect(round($this->gauges()->get('throughput')->value))->toBe(240.0);
+    expect($this->gauges()->get('throughput')->unit)->toBe('items/min');
+
+    expect(round($this->gauges()->get('throughput 2')->value))->toBe(4.0);
+    expect($this->gauges()->get('throughput 2')->unit)->toBe('lists/sec');
+});
