@@ -16,7 +16,7 @@ class MologServiceProvider extends ServiceProvider
      * Bootstrap the application services.
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         if ($this->app->runningInConsole()) {
             $this->loadMigrations();
@@ -26,9 +26,9 @@ class MologServiceProvider extends ServiceProvider
     }
 
     /** @inheritdoc */
-    public function register()
+    public function register(): void
     {
-        $this->mergeConfigFrom(realpath(__DIR__ . '/../config/molog.php'), 'molog');
+        $this->mergeConfigFrom($this->configPath(), 'molog');
     }
 
     /**
@@ -37,29 +37,39 @@ class MologServiceProvider extends ServiceProvider
      */
     protected function publishResources(): void
     {
-        /** @var string $migrationPath */
-        $migrationPath = realpath(__DIR__ . '/../database/migrations/2021_10_14_000000_create_molog_tables.php');
-
         $this->publishes([
-            $migrationPath => database_path('migrations'),
+            $this->migrationPath() => database_path('migrations'),
         ], 'laravel-molog-migrate');
 
-        /** @var string $configPath */
-        $configPath = realpath(__DIR__ . '/../config/molog.php');
-
         $this->publishes([
-            $configPath => config_path('molog.php'),
+            $this->configPath() => config_path('molog.php'),
         ], 'laravel-molog-config');
     }
 
     /**
-     * Register Stargate's migration files.
+     * Register the package's migration files.
      * @return void
      */
     protected function loadMigrations(): void
     {
-        $this->loadMigrationsFrom(
-            realpath(__DIR__ . '/../database/migrations/2021_10_14_000000_create_molog_tables.php')
-        );
+        $this->loadMigrationsFrom($this->migrationPath());
+    }
+
+    /**
+     * Absolute path of the package's configuration file.
+     * @return string
+     */
+    protected function configPath(): string
+    {
+        return __DIR__ . '/../config/molog.php';
+    }
+
+    /**
+     * Absolute path of the package's migration file.
+     * @return string
+     */
+    protected function migrationPath(): string
+    {
+        return __DIR__ . '/../database/migrations/2021_10_14_000000_create_molog_tables.php';
     }
 }

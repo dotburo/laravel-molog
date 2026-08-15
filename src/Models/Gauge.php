@@ -27,11 +27,14 @@ class Gauge extends Event
     ];
 
     /** @inheritdoc */
-    protected $casts = [
-        'value' => 'float',
-        'user_id' => 'int',
-        'tenant_id' => 'int',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'value' => 'float',
+            'user_id' => 'int',
+            'tenant_id' => 'int',
+        ];
+    }
 
     /**
      * Public setter.

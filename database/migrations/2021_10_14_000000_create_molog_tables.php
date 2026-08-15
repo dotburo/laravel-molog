@@ -6,13 +6,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMologTables extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         $pkType = config('molog.primary_key_type');
 
@@ -62,7 +62,7 @@ class CreateMologTables extends Migration
      * Reverse the migrations.
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('messages');
         Schema::dropIfExists('gauges');
@@ -77,7 +77,7 @@ class CreateMologTables extends Migration
     private function setPrimaryKey(Blueprint $table, string $primaryKeyType = 'id'): Blueprint
     {
         switch ($primaryKeyType) {
-            case 'uuid';
+            case 'uuid':
                 $table->uuid('id')->primary();
                 break;
             default:
@@ -100,7 +100,7 @@ class CreateMologTables extends Migration
         $table->string("{$name}_type")->nullable();
 
         switch ($primaryKeyType) {
-            case 'uuid';
+            case 'uuid':
                 $table->uuid("{$name}_id")->nullable()->index();
                 break;
             default:
