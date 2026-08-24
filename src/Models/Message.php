@@ -28,14 +28,17 @@ class Message extends Event implements LoggerInterface
     protected $table = 'messages';
 
     /** @inheritdoc */
-    protected $casts = [
-        'level' => 'int',
-        'user_id' => 'int',
-        'tenant_id' => 'int',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'level' => 'int',
+            'user_id' => 'int',
+            'tenant_id' => 'int',
+        ];
+    }
 
     /** @inheritdoc */
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 

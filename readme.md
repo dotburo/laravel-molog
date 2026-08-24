@@ -52,18 +52,40 @@ echo $msg->body;        // Stack trace ...
 - Output messages and metrics to string
 - Generic HTTP controller
 
+## Requirements
+
+| Package | PHP         | Laravel      |
+|---------|-------------|--------------|
+| `^2.0`  | 8.3, 8.4    | 12.x, 13.x   |
+| `^1.6`  | 7.4 &ndash; 8.2 | 7.x &ndash; 10.x |
+
+Version 2.0 raises the minimum requirements to PHP 8.3 and Laravel 12. Stay on `^1.6` if your
+application still runs on Laravel 11 or older.
+
 ## Usage
 Install with composer from [packagist.org](https://packagist.org/packages/dotburo/laravel-molog):
 ```bash
 composer require dotburo/laravel-molog
 ```
 
-Publish the config file and migrations and migrate your app:
+The service provider is registered automatically through package auto-discovery, so there is
+nothing to add to `bootstrap/providers.php`.
+
+The package's migration is loaded straight from the package, so `php artisan migrate` is enough to
+create the `messages` and `gauges` tables. Publish the files only if you want to own them:
 ```bash
+# Both the config file and the migration
 php artisan vendor:publish --provider="Dotburo\Molog\MologServiceProvider"
+
+# Or selectively, by tag
+php artisan vendor:publish --tag=laravel-molog-config
+php artisan vendor:publish --tag=laravel-molog-migrate
 
 php artisan migrate
 ```
+
+Publish the config **before** migrating if you want the tables to use UUID primary keys
+(`molog.primary_key_type`).
 
 Wherever you need logging, use the `Logging` trait. See the documentation for more [usage examples](./doc/Examples.md).
 ```php
